@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 122138506}
   - component: {fileID: 122138507}
   - component: {fileID: 122138508}
+  - component: {fileID: 122138509}
   m_Layer: 0
   m_Name: BlockWell
   m_TagString: Untagged
@@ -149,12 +150,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 122138504}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -12.8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &122138506
 MonoBehaviour:
@@ -181,7 +182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockPairPrefab: {fileID: 7561504521035290273, guid: 4fb9db863cdd3494bbe9a9146d1d651b, type: 3}
-  currentColumnHeights: 
+  currentColumnHeights: []
 --- !u!114 &122138508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +196,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wellHandler: {fileID: 122138507}
+--- !u!114 &122138509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122138504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da0a148c20a1f14fb4ad7469681ff20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &578665799
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,7 +243,7 @@ Camera:
   m_GameObject: {fileID: 578665799}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -323,7 +336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockPairPrefab: {fileID: 7561504521035290273, guid: 4fb9db863cdd3494bbe9a9146d1d651b, type: 3}
-  currentColumnHeights: 
+  currentColumnHeights: []
 --- !u!114 &1207222349
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,7 +361,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1749759239
 GameObject:

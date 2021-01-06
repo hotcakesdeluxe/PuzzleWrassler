@@ -103,11 +103,6 @@ public class ManagerScript : MonoBehaviour
         if (blockPair.rightBlock != null) Destroy(blockPair.rightBlock.gameObject);
         currentHeights = new int[6] { 0, 0, 0, 0, 0, 0 };
 
-        // Add start blocks to column
-        // AddBlockToColumn(blockPair.SpawnBlock("earth", 1).gameObject);
-        // AddBlockToColumn(blockPair.SpawnBlock("air", 2).gameObject);
-        // AddBlockToColumn(blockPair.SpawnBlock("water", 3).gameObject);
-        // AddBlockToColumn(blockPair.SpawnBlock("fire", 4).gameObject);
 
         // // initialize block pair
         blockPair.isActive = true;

@@ -9,20 +9,22 @@ public class BlockPair : MonoBehaviour
     public BlockObject leftBlock;
     public BlockObject rightBlock;
     private int orientation = 0;  // Left is pivot, right is oriented 90 * orientation degrees
+    Stack<BlockObject> blockObjectPool = new Stack<BlockObject>();
 
     public void Initialize(WellHandler wellhandler)
     {
         _wellHandler = wellhandler;
-        leftBlock = GameObject.Instantiate<BlockObject>(_blockPrefab, new Vector3(this.transform.position.x, BlockWell.height + 1, 0), Quaternion.identity, this.transform);
-        rightBlock = GameObject.Instantiate<BlockObject>(_blockPrefab, new Vector3(this.transform.position.x + 1, BlockWell.height + 1, 0), Quaternion.identity, this.transform);
-        leftBlock.Initialize(0);
-        rightBlock.Initialize(1);
+        leftBlock = GetFreshBlock();
+        rightBlock = GetFreshBlock();
+        leftBlock.Initialize((BlockWell.width/2)-1);
+        rightBlock.Initialize(BlockWell.width/2);
+
     }
     private void Update()
     {
         leftBlock.UpdatePosition();
         rightBlock.UpdatePosition();
-        Debug.Log(_wellHandler.currentColumnHeights[leftBlock.column]);
+
         if (leftBlock.transform.position.y <= _wellHandler.currentColumnHeights[leftBlock.column] + 1)
         {
             leftBlock.isFalling = false;
@@ -31,7 +33,51 @@ public class BlockPair : MonoBehaviour
         {
             rightBlock.isFalling = false;
         }
+
     }
+
+    private void FixedUpdate()
+    {
+        if (!leftBlock.isFalling && !rightBlock.isFalling)
+        {
+            leftBlock.transform.SetParent(null);
+            rightBlock.transform.SetParent(null);
+            _wellHandler.AddBlockToColumn(leftBlock, rightBlock);
+        }
+    }
+
+    private BlockObject GetFreshBlock()
+    {
+        BlockObject retObj;
+
+        if (blockObjectPool.Count > 0)
+        {
+            retObj = blockObjectPool.Pop();
+        }
+        else
+        {
+
+            retObj = GameObject.Instantiate<BlockObject>(_blockPrefab, _wellHandler.spawnPoint, Quaternion.identity, transform);
+        }
+
+        retObj.gameObject.SetActive(true);
+        retObj.enabled = true;
+
+        return retObj;
+    }
+
+    private void ReturnBlockToPool(BlockObject obj)
+    {
+
+        if (obj != null)
+        {
+            obj.enabled = false;
+            obj.gameObject.SetActive(false);
+
+            blockObjectPool.Push(obj);
+        }
+    }
+    
     public void TryHorizontalMove(int direction)
     {
         if (leftBlock.isFalling)
@@ -46,7 +92,7 @@ public class BlockPair : MonoBehaviour
             if (leftBlock != null)
             {
                 leftBlock.column += direction;
-                leftBlock.transform.position = new Vector3(leftBlock.column, leftBlock.transform.position.y, 0);
+                //leftBlock.transform.position = new Vector3(leftBlock.column, leftBlock.transform.position.y, 0);
             }
 
         }
@@ -63,7 +109,7 @@ public class BlockPair : MonoBehaviour
             if (rightBlock != null)
             {
                 rightBlock.column += direction;
-                rightBlock.transform.position = new Vector3(rightBlock.column, rightBlock.transform.position.y, 0);
+                //rightBlock.transform.position = new Vector3(rightBlock.column, rightBlock.transform.position.y, 0);
             }
         }
     }
@@ -83,23 +129,30 @@ public class BlockPair : MonoBehaviour
             else if (newDirection == 2) testPositionOffset = new Vector3(-1, 0, 0);
             else if (newDirection == 3) testPositionOffset = new Vector3(0, -1, 0);
 
-            Vector3 testPosition = leftBlock.transform.position + testPositionOffset;
-            if (testPosition.x < 0 || testPosition.x >= BlockWell.width)
+            Vector3 testPosition = leftBlock.transform.localPosition + testPositionOffset;
+            Vector3 movePosition = leftBlock.transform.position + testPositionOffset;
+            if (testPosition.x < transform.position.x || testPosition.x >= BlockWell.width)
             {
                 TrySwapRotate(direction);
                 return;
             }
-
+            if (testPosition.x < 0)
+            {
+                testPosition.x = 0;
+            }
             float newTestColumnHeight = _wellHandler.currentColumnHeights[Mathf.FloorToInt(testPosition.x)];
+            Debug.Log(newTestColumnHeight + "new column height");
             if (testPosition.y < newTestColumnHeight)
             {
+                Debug.Log("here");
                 TrySwapRotate(direction);
                 return;
             }
 
             orientation = newDirection;
             rightBlock.column = Mathf.FloorToInt(testPosition.x);
-            rightBlock.transform.position = testPosition;
+
+            rightBlock.transform.position = movePosition;
         }
     }
 
@@ -115,17 +168,23 @@ public class BlockPair : MonoBehaviour
             else if (newDirection == 2) testPositionOffset = new Vector3(-1, 0, 0);
             else if (newDirection == 3) testPositionOffset = new Vector3(0, -1, 0);
 
-            Vector3 testPosition = leftBlock.transform.position + testPositionOffset;
-            if (testPosition.x < 0 || testPosition.x >= BlockWell.width)
+            Vector3 testPosition = leftBlock.transform.localPosition + testPositionOffset;
+            Vector3 movePosition = leftBlock.transform.position + testPositionOffset;
+            if (testPosition.x < transform.position.x || testPosition.x >= BlockWell.width)
             {
+
                 DoSwap();
                 return;
             }
-
+            if (testPosition.x < 0)
+            {
+                testPosition.x = 0;
+            }
             float newTestColumnHeight = _wellHandler.currentColumnHeights[Mathf.FloorToInt(testPosition.x)];
             if (testPosition.y < newTestColumnHeight)
             {
                 DoSwap();
+                Debug.Log("here do swap");
                 return;
             }
 
@@ -133,7 +192,7 @@ public class BlockPair : MonoBehaviour
             rightBlock.column = leftBlock.column;
             rightBlock.transform.position = leftBlock.transform.position;
             leftBlock.column = Mathf.FloorToInt(testPosition.x);
-            leftBlock.transform.position = testPosition;
+            leftBlock.transform.position = movePosition;
         }
     }
     void DoSwap()

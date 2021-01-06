@@ -309,6 +309,7 @@ public class BlockPairScript : MonoBehaviour
         else if (newDirection == 3) testPositionOffset = new Vector3(0, -1, 0);
 
         Vector3 testPosition = leftBlock.transform.position + testPositionOffset;
+        
         if (testPosition.x < 0 || testPosition.x >= towerWidth)
         {
             trySwapRotate(direction);

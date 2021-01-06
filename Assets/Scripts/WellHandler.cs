@@ -7,29 +7,30 @@ public class WellHandler : MonoBehaviour
     public BlockPair currBlockPair {get; private set;}
     public Vector3 spawnPoint {get; private set;}
     [SerializeField] private BlockPair _blockPairPrefab;
-    public int[] currentColumnHeights;
+    //public int[] currentColumnHeights;
+    public List<float> currentColumnHeights = new List<float>();
     //pool of block pairs
     Stack<BlockPair> blockPairPool = new Stack<BlockPair>();
     //need something to preview the next to spawn
     private void Awake()
     {
-        currentColumnHeights = new int[BlockWell.width];
-        spawnPoint = new Vector3(this.transform.position.x, this.transform.position.y + BlockWell.height, 0);
-        foreach (int num in currentColumnHeights)
+        spawnPoint = new Vector3(transform.position.x, transform.position.y + BlockWell.height, 0);
+        for(int i = 0; i < BlockWell.width; i++)
         {
-            Debug.Log(num);
+            currentColumnHeights.Add(0);
+            //Debug.Log(currentColumnHeights[i]);
         }
         SpawnNext();
     }
 
     private void SpawnNext()
     {
-        BlockPair newPair = GetFreshNoteObject();
+        BlockPair newPair = GetFreshBlockPair();
         newPair.Initialize(this);
         currBlockPair = newPair;
     }
 
-    private BlockPair GetFreshNoteObject()
+    private BlockPair GetFreshBlockPair()
     {
         BlockPair retObj;
 
@@ -40,7 +41,7 @@ public class WellHandler : MonoBehaviour
         else
         {
             
-            retObj = GameObject.Instantiate<BlockPair>(_blockPairPrefab, spawnPoint, Quaternion.identity, this.transform);
+            retObj = GameObject.Instantiate<BlockPair>(_blockPairPrefab, spawnPoint, Quaternion.identity, transform);
         }
 
         retObj.gameObject.SetActive(true);
@@ -48,9 +49,8 @@ public class WellHandler : MonoBehaviour
 
         return retObj;
     }
-
-    // Deactivates and returns a Note Object to the pool.
-    private void ReturnNoteObjectToPool(BlockPair obj)
+    
+    private void ReturnBlockPairToPool(BlockPair obj)
     {
 
         if (obj != null)
@@ -62,9 +62,13 @@ public class WellHandler : MonoBehaviour
         }
     }
 
-    public void AddBlockToColumn()
-    {
-        currBlockPair.leftBlock.transform.position = new Vector3(currBlockPair.leftBlock.column, 0, 0);//change y to height of current column
-        currBlockPair.rightBlock.transform.position = new Vector3(currBlockPair.rightBlock.column, 0, 0);//change y to height of current column
+    public void AddBlockToColumn(BlockObject leftblock, BlockObject rightblock)
+    {   //add height to each block's column
+        currentColumnHeights[leftblock.column] += 1;
+        currentColumnHeights[rightblock.column] += 1;
+        Debug.Log(currentColumnHeights[0]);
+        ReturnBlockPairToPool(currBlockPair);
+        SpawnNext();
+        Debug.Log("asdfasdf");
     }
 }

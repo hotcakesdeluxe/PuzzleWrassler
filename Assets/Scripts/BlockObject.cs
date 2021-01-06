@@ -10,12 +10,16 @@ public class BlockObject : MonoBehaviour
     public bool isFalling = true;
     public static float fallSpeed = 0.5f;
     public float fallSpeedMultiplier = 1f;
+    private Vector3 _spawnPosition;
+
     public void Initialize(int startColumn)
     {
         blockType = GetRandomElement();
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshRenderer.material.SetColor("_Color", GetColorByType(blockType));
         column = startColumn;
+        _spawnPosition = transform.position;
+        //this.transform.local = new Vector3(0, this.transform.position.y, this.transform.position.z);
     }
     public void UpdatePosition()
     {
@@ -27,6 +31,7 @@ public class BlockObject : MonoBehaviour
                 actualFallSpeed = Mathf.Max(10f, actualFallSpeed);
             }
             transform.position += Vector3.down * actualFallSpeed * Time.deltaTime;
+            transform.position = new Vector3(column+_spawnPosition.x, transform.position.y, 0);
         }
         else
         {
