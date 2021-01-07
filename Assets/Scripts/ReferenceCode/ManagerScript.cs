@@ -292,7 +292,7 @@ public class ManagerScript : MonoBehaviour
         }
         else
         {
-            blockObject.transform.position = new Vector3(column, currentHeights[column], 0);
+            blockObject.transform.position = new Vector3(column, currentHeights[column], 0); //change column to the right value
             if (blockGrid[column, currentHeights[column] - 1] != null) Debug.Log("WARNING: GRID SPOT OCCUPIED: " + column + ", " + currentHeights[column]);
             blockGrid[column, currentHeights[column] - 1] = blockObject;
         }

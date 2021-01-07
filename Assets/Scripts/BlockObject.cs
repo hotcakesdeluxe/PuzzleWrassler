@@ -19,10 +19,15 @@ public class BlockObject : MonoBehaviour
         _meshRenderer.material.SetColor("_Color", GetColorByType(blockType));
         column = startColumn;
         _spawnPosition = transform.position;
+        isFalling = true;
         //this.transform.local = new Vector3(0, this.transform.position.y, this.transform.position.z);
     }
-    public void UpdatePosition()
+    public void UpdatePosition(float columnHeight)
     {
+        if (transform.position.y <= columnHeight)
+        {
+            isFalling = false;
+        }
         if (isFalling)
         {
             float actualFallSpeed = Mathf.Min(30f, fallSpeed * fallSpeedMultiplier);
@@ -33,11 +38,7 @@ public class BlockObject : MonoBehaviour
             transform.position += Vector3.down * actualFallSpeed * Time.deltaTime;
             transform.position = new Vector3(column+_spawnPosition.x, transform.position.y, 0);
         }
-        else
-        {
-            //add to column
-            //unparent and recycle blockpair?
-        }
+       
     }
     private string GetRandomElement()
     {

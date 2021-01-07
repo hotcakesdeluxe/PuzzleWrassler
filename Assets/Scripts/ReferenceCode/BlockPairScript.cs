@@ -76,6 +76,7 @@ public class BlockPairScript : MonoBehaviour
 
     public void InitializeBlockPair()
     {
+      Debug.Log("spawn");
         if (gameOver) return;
         isActive = true;
 

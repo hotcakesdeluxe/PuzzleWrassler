@@ -22,27 +22,31 @@ public class BlockPair : MonoBehaviour
     }
     private void Update()
     {
-        leftBlock.UpdatePosition();
-        rightBlock.UpdatePosition();
+        leftBlock.UpdatePosition(_wellHandler.currentColumnHeights[leftBlock.column] + 1);
+        rightBlock.UpdatePosition(_wellHandler.currentColumnHeights[leftBlock.column] + 1);
 
-        if (leftBlock.transform.position.y <= _wellHandler.currentColumnHeights[leftBlock.column] + 1)
-        {
-            leftBlock.isFalling = false;
-        }
-        if (rightBlock.transform.position.y <= _wellHandler.currentColumnHeights[rightBlock.column] + 1)
-        {
-            rightBlock.isFalling = false;
-        }
 
+        Debug.Log(_wellHandler.currentColumnHeights[leftBlock.column] + " leftblock column height");
+        Debug.Log(_wellHandler.currentColumnHeights[rightBlock.column] + " rightBlock column height");
     }
 
     private void FixedUpdate()
     {
-        if (!leftBlock.isFalling && !rightBlock.isFalling)
+        if (!leftBlock.isFalling)
         {
+            Debug.Log("leftblock not falling");
             leftBlock.transform.SetParent(null);
+            _wellHandler.AddBlockToColumn(leftBlock);
+        }
+        if (!rightBlock.isFalling)
+        {
+            Debug.Log("rightBlock not falling");
             rightBlock.transform.SetParent(null);
-            _wellHandler.AddBlockToColumn(leftBlock, rightBlock);
+            _wellHandler.AddBlockToColumn(rightBlock);
+        }
+        if(!leftBlock.isFalling && !rightBlock.isFalling)
+        {
+            _wellHandler.CheckForDestroyableblock();
         }
     }
 
@@ -77,7 +81,7 @@ public class BlockPair : MonoBehaviour
             blockObjectPool.Push(obj);
         }
     }
-    
+
     public void TryHorizontalMove(int direction)
     {
         if (leftBlock.isFalling)
@@ -131,7 +135,7 @@ public class BlockPair : MonoBehaviour
 
             Vector3 testPosition = leftBlock.transform.localPosition + testPositionOffset;
             Vector3 movePosition = leftBlock.transform.position + testPositionOffset;
-            if (testPosition.x < transform.position.x || testPosition.x >= BlockWell.width)
+            if (testPosition.x < leftBlock.transform.position.x || testPosition.x >= BlockWell.width)
             {
                 TrySwapRotate(direction);
                 return;
@@ -141,7 +145,7 @@ public class BlockPair : MonoBehaviour
                 testPosition.x = 0;
             }
             float newTestColumnHeight = _wellHandler.currentColumnHeights[Mathf.FloorToInt(testPosition.x)];
-            Debug.Log(newTestColumnHeight + "new column height");
+
             if (testPosition.y < newTestColumnHeight)
             {
                 Debug.Log("here");
@@ -170,7 +174,7 @@ public class BlockPair : MonoBehaviour
 
             Vector3 testPosition = leftBlock.transform.localPosition + testPositionOffset;
             Vector3 movePosition = leftBlock.transform.position + testPositionOffset;
-            if (testPosition.x < transform.position.x || testPosition.x >= BlockWell.width)
+            if (testPosition.x < leftBlock.transform.position.x || testPosition.x >= BlockWell.width)
             {
 
                 DoSwap();

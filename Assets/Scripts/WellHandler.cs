@@ -4,23 +4,32 @@ using UnityEngine;
 
 public class WellHandler : MonoBehaviour
 {
-    public BlockPair currBlockPair {get; private set;}
-    public Vector3 spawnPoint {get; private set;}
+    [SerializeField] private DestroyBlock _destroyBlock;
+    public BlockPair currBlockPair { get; private set; }
+    public Vector3 spawnPoint { get; private set; }
     [SerializeField] private BlockPair _blockPairPrefab;
     //public int[] currentColumnHeights;
-    public List<float> currentColumnHeights = new List<float>();
+    public List<int> currentColumnHeights = new List<int>();
     //pool of block pairs
     Stack<BlockPair> blockPairPool = new Stack<BlockPair>();
+    private bool _gameStart = false;
     //need something to preview the next to spawn
     private void Awake()
     {
+        _destroyBlock.spawnNextEvent.AddListener(SpawnNext);
         spawnPoint = new Vector3(transform.position.x, transform.position.y + BlockWell.height, 0);
-        for(int i = 0; i < BlockWell.width; i++)
+        for (int i = 0; i < BlockWell.width; i++)
         {
             currentColumnHeights.Add(0);
             //Debug.Log(currentColumnHeights[i]);
         }
-        SpawnNext();
+        if(!_gameStart)
+        {
+            Debug.Log("game start");
+            _gameStart = true;
+            SpawnNext();
+        }
+        
     }
 
     private void SpawnNext()
@@ -40,7 +49,7 @@ public class WellHandler : MonoBehaviour
         }
         else
         {
-            
+
             retObj = GameObject.Instantiate<BlockPair>(_blockPairPrefab, spawnPoint, Quaternion.identity, transform);
         }
 
@@ -49,7 +58,7 @@ public class WellHandler : MonoBehaviour
 
         return retObj;
     }
-    
+
     private void ReturnBlockPairToPool(BlockPair obj)
     {
 
@@ -62,13 +71,30 @@ public class WellHandler : MonoBehaviour
         }
     }
 
-    public void AddBlockToColumn(BlockObject leftblock, BlockObject rightblock)
+    public void AddBlockToColumn(BlockObject currentBlock)
     {   //add height to each block's column
-        currentColumnHeights[leftblock.column] += 1;
-        currentColumnHeights[rightblock.column] += 1;
-        Debug.Log(currentColumnHeights[0]);
+        
+        currentColumnHeights[currentBlock.column]++;
+        Debug.Log(currentColumnHeights[currentBlock.column]+" current column height");
+        if (currentColumnHeights[currentBlock.column] > BlockWell.height)
+        {
+            //game over
+        }
+        else
+        {
+            //leftblock.transform.position = new Vector3(leftblock.column, currentColumnHeights[leftblock.column], 0);
+            if (BlockWell.blockGrid[currentBlock.column, currentColumnHeights[currentBlock.column] - 1] != null)
+            {
+                Debug.Log("WARNING: GRID SPOT OCCUPIED: " + currentBlock.column + ", " + currentColumnHeights[currentBlock.column]);
+            }
+            BlockWell.blockGrid[currentBlock.column, currentColumnHeights[currentBlock.column] - 1] = currentBlock.gameObject;
+            
+            
+        }
+    }
+    public void CheckForDestroyableblock()
+    {
         ReturnBlockPairToPool(currBlockPair);
-        SpawnNext();
-        Debug.Log("asdfasdf");
+        _destroyBlock.CheckForDestroyBlocks(1);
     }
 }

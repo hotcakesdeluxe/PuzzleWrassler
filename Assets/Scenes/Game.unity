@@ -181,8 +181,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76e2afdc573b82346b0d73a8ce564d85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _destroyBlock: {fileID: 122138509}
   _blockPairPrefab: {fileID: 7561504521035290273, guid: 4fb9db863cdd3494bbe9a9146d1d651b, type: 3}
-  currentColumnHeights: []
+  currentColumnHeights: 
 --- !u!114 &122138508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,7 +245,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.26139194, g: 0.39042827, b: 0.6226415, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -309,7 +310,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1207222347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,8 +336,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76e2afdc573b82346b0d73a8ce564d85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _destroyBlock: {fileID: 0}
   _blockPairPrefab: {fileID: 7561504521035290273, guid: 4fb9db863cdd3494bbe9a9146d1d651b, type: 3}
-  currentColumnHeights: []
+  currentColumnHeights: 
 --- !u!114 &1207222349
 MonoBehaviour:
   m_ObjectHideFlags: 0
