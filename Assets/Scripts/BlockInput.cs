@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class BlockInput : MonoBehaviour
 {
-    public WellHandler wellHandler;
-    private BlockPair _currrentBlockPair;
+    public BlockPairSpawner blockPairSpawner;
+    private BlockPair _currentBlockPair;
     private float leftHoldTime = 0;
     private float rightHoldTime = 0;
     private float holdTime = 0.5f;  // Hold time until blocks slide
 
     private void Update()
     {
-        _currrentBlockPair = wellHandler.currBlockPair;
+        _currentBlockPair = blockPairSpawner.activeBlockPair;
         CheckInput();
     }
 
@@ -21,12 +21,12 @@ public class BlockInput : MonoBehaviour
         //tap button
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            _currrentBlockPair.TryHorizontalMove(-1);
+            _currentBlockPair.TryHorizontalMove(Vector3.left);
             leftHoldTime = 0;
         }
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
-            _currrentBlockPair.TryHorizontalMove(1);
+            _currentBlockPair.TryHorizontalMove(Vector3.right);
             rightHoldTime = 0;
         }
         //held button
@@ -35,7 +35,7 @@ public class BlockInput : MonoBehaviour
             leftHoldTime += Time.deltaTime;
             if (leftHoldTime > holdTime)
             {
-                _currrentBlockPair.TryHorizontalMove(-1);
+                _currentBlockPair.TryHorizontalMove(Vector3.left);
             }
         }
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
@@ -43,16 +43,16 @@ public class BlockInput : MonoBehaviour
             rightHoldTime += Time.deltaTime;
             if (rightHoldTime > holdTime)
             {
-                _currrentBlockPair.TryHorizontalMove(1);
+                _currentBlockPair.TryHorizontalMove(Vector3.right);
             }
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            _currrentBlockPair.TryRotate(1);
+            _currentBlockPair.TryRotate(1);
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            _currrentBlockPair.TryRotate(-1);
+            _currentBlockPair.TryRotate(-1);
         }
     }
 }

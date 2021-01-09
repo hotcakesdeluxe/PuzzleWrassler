@@ -1,212 +1,195 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PHL.Common.Utility;
 
 public class BlockPair : MonoBehaviour
 {
-    [SerializeField] private BlockObject _blockPrefab;
-    private WellHandler _wellHandler;
-    public BlockObject leftBlock;
-    public BlockObject rightBlock;
-    private int orientation = 0;  // Left is pivot, right is oriented 90 * orientation degrees
-    Stack<BlockObject> blockObjectPool = new Stack<BlockObject>();
-
-    public void Initialize(WellHandler wellhandler)
+    public bool isFalling = true;
+    public float fallSpeed = 0.5f;
+    public float fallSpeedMultiplier = 5f;
+    private BlockBoard _blockBoard;
+    public Block activeLeftBlock;
+    public Block activeRightBlock;
+    public SecureEvent spawnNextEvent { get; private set; } = new SecureEvent();
+    public void Initialize(BlockBoard blockboard, Block leftBlock, Block rightBlock)
     {
-        _wellHandler = wellhandler;
-        leftBlock = GetFreshBlock();
-        rightBlock = GetFreshBlock();
-        leftBlock.Initialize((BlockWell.width/2)-1);
-        rightBlock.Initialize(BlockWell.width/2);
+        _blockBoard = blockboard;
+        activeLeftBlock = leftBlock;
+        activeRightBlock = rightBlock;
+        activeLeftBlock.Initialize(_blockBoard);
+        activeRightBlock.Initialize(_blockBoard);
+        rightBlock.transform.position = new Vector3(transform.position.x + 1, transform.position.y, transform.position.z);
+        UpdateGameBoard();
+    }
+    void Update()
+    {
+        _blockBoard.DebugBoard();
+        if (isFalling)
+        {
+            float actualFallSpeed = Mathf.Min(30f, fallSpeed * fallSpeedMultiplier);
+            if (ValidMove(Vector3.down))
+            {
+                ClearCurrentGameboardPosition();
+                transform.position += Vector3.down * actualFallSpeed * Time.deltaTime;
+                UpdateGameBoard();
+            }
+            else
+            {
+                BlockPairLanded();
+            }
+        }
 
     }
-    private void Update()
+    public void TryHorizontalMove(Vector3 direction)
     {
-        leftBlock.UpdatePosition(_wellHandler.currentColumnHeights[leftBlock.column] + 1);
-        rightBlock.UpdatePosition(_wellHandler.currentColumnHeights[leftBlock.column] + 1);
-
-
-        Debug.Log(_wellHandler.currentColumnHeights[leftBlock.column] + " leftblock column height");
-        Debug.Log(_wellHandler.currentColumnHeights[rightBlock.column] + " rightBlock column height");
-    }
-
-    private void FixedUpdate()
-    {
-        if (!leftBlock.isFalling)
+        if (ValidMove(direction))
         {
-            Debug.Log("leftblock not falling");
-            leftBlock.transform.SetParent(null);
-            _wellHandler.AddBlockToColumn(leftBlock);
-        }
-        if (!rightBlock.isFalling)
-        {
-            Debug.Log("rightBlock not falling");
-            rightBlock.transform.SetParent(null);
-            _wellHandler.AddBlockToColumn(rightBlock);
-        }
-        if(!leftBlock.isFalling && !rightBlock.isFalling)
-        {
-            _wellHandler.CheckForDestroyableblock();
+            ClearCurrentGameboardPosition();
+            transform.position += direction;
+            UpdateGameBoard();
         }
     }
-
-    private BlockObject GetFreshBlock()
+    public void TryRotate(int direction)
     {
-        BlockObject retObj;
-
-        if (blockObjectPool.Count > 0)
+        Vector3 rotateVector;
+        if(direction > 0)
         {
-            retObj = blockObjectPool.Pop();
+            rotateVector = GetCounterClockwiseRotationVector(activeRightBlock.transform);
         }
         else
         {
-
-            retObj = GameObject.Instantiate<BlockObject>(_blockPrefab, _wellHandler.spawnPoint, Quaternion.identity, transform);
+            rotateVector = GetClockwiseRotationVector(activeRightBlock.transform);
         }
-
-        retObj.gameObject.SetActive(true);
-        retObj.enabled = true;
-
-        return retObj;
+        
+        if(ValidRotate(rotateVector))
+        {
+            ClearCurrentGameboardPosition();
+            activeRightBlock.transform.position += rotateVector;
+            UpdateGameBoard();
+        }
+        
     }
-
-    private void ReturnBlockToPool(BlockObject obj)
+    Vector3 GetClockwiseRotationVector(Transform block)
     {
-
-        if (obj != null)
+        Vector3 blockPos = RoundVector(block.position);
+        Debug.Log(Vector3.Distance(blockPos + Vector3.left, transform.position));
+        if (Vector3.Distance(blockPos + Vector3.left, transform.position) < 1)
         {
-            obj.enabled = false;
-            obj.gameObject.SetActive(false);
-
-            blockObjectPool.Push(obj);
+            return new Vector3(-1, -1);
         }
+        else if (Vector3.Distance(blockPos + Vector3.up, transform.position) < 1)
+        {
+            return new Vector3(-1, +1);
+        }
+        else if (Vector3.Distance(blockPos + Vector3.right, transform.position) < 1)
+        {
+            return new Vector3(+1, +1);
+        }
+        else if (Vector3.Distance(blockPos + Vector3.down, transform.position) < 1)
+        {
+            return new Vector3(+1, -1);
+        }
+
+        return new Vector3(0, 0);
     }
 
-    public void TryHorizontalMove(int direction)
+    Vector3 GetCounterClockwiseRotationVector(Transform block)
     {
-        if (leftBlock.isFalling)
+        Vector3 blockPos = RoundVector(block.position);
+        Debug.Log(Vector3.Distance(blockPos + Vector3.left, transform.position));
+        if (Vector3.Distance(blockPos + Vector3.left, transform.position)< 1)
         {
-            if (leftBlock != null)
-            {
-                int newLeft = leftBlock.column + direction;
-                if (newLeft < 0 || newLeft >= BlockWell.width) return;
-                float newLeftColumnHeight = _wellHandler.currentColumnHeights[newLeft];
-                if (leftBlock.transform.position.y < newLeftColumnHeight + 1) return;
-            }
-            if (leftBlock != null)
-            {
-                leftBlock.column += direction;
-                //leftBlock.transform.position = new Vector3(leftBlock.column, leftBlock.transform.position.y, 0);
-            }
-
+            return new Vector3(-1, +1);
         }
-        if (rightBlock.isFalling)
+        else if (Vector3.Distance(blockPos + Vector3.up, transform.position) < 1)
         {
-            if (rightBlock != null)
-            {
-                int newRight = rightBlock.column + direction;
-                if (newRight < 0 || newRight >= BlockWell.width) return;
-                float newRightColumnHeight = _wellHandler.currentColumnHeights[newRight];
-                if (rightBlock.transform.position.y < newRightColumnHeight) return;
-            }
-
-            if (rightBlock != null)
-            {
-                rightBlock.column += direction;
-                //rightBlock.transform.position = new Vector3(rightBlock.column, rightBlock.transform.position.y, 0);
-            }
+            return new Vector3(+1, +1);
         }
+        else if (Vector3.Distance(blockPos + Vector3.right, transform.position) < 1)
+        {
+            return new Vector3(+1, -1);
+        }
+        else if (Vector3.Distance(blockPos + Vector3.down, transform.position) < 1)
+        {
+            return new Vector3(-1, -1);
+        }
+
+        return new Vector3(0, 0);
     }
 
-    public void TryRotate(int direction)
+    bool ValidMove(Vector3 direction)
     {
-        if (leftBlock == null || rightBlock == null)
+        foreach (Transform block in transform)
         {
-            return;
+            Vector3 newPosition = new Vector3(block.position.x + direction.x, block.position.y + direction.y, 0);
+            if (block.position.y + direction.y <= 0)
+            {
+                return false;
+            }
+
+            if (!_blockBoard.FreeSpace(newPosition, transform))
+            {
+                return false;
+            }
         }
-        if (rightBlock.isFalling)
-        {
-            int newDirection = (direction + 4 + orientation) % 4;
-            Vector3 testPositionOffset = Vector3.zero;
-            if (newDirection == 0) testPositionOffset = new Vector3(1, 0, 0);
-            else if (newDirection == 1) testPositionOffset = new Vector3(0, 1, 0);
-            else if (newDirection == 2) testPositionOffset = new Vector3(-1, 0, 0);
-            else if (newDirection == 3) testPositionOffset = new Vector3(0, -1, 0);
-
-            Vector3 testPosition = leftBlock.transform.localPosition + testPositionOffset;
-            Vector3 movePosition = leftBlock.transform.position + testPositionOffset;
-            if (testPosition.x < leftBlock.transform.position.x || testPosition.x >= BlockWell.width)
-            {
-                TrySwapRotate(direction);
-                return;
-            }
-            if (testPosition.x < 0)
-            {
-                testPosition.x = 0;
-            }
-            float newTestColumnHeight = _wellHandler.currentColumnHeights[Mathf.FloorToInt(testPosition.x)];
-
-            if (testPosition.y < newTestColumnHeight)
-            {
-                Debug.Log("here");
-                TrySwapRotate(direction);
-                return;
-            }
-
-            orientation = newDirection;
-            rightBlock.column = Mathf.FloorToInt(testPosition.x);
-
-            rightBlock.transform.position = movePosition;
-        }
+        return true;
     }
 
-    public void TrySwapRotate(int direction)
+    bool ValidRotate(Vector3 direction)
     {
-        if (leftBlock == null || rightBlock == null) return;
-        if (rightBlock.isFalling)
+        Vector3 blockpos = activeRightBlock.transform.position;
+        Vector3 newPosition = new Vector3(blockpos.x + direction.x, blockpos.y + direction.y);
+        return _blockBoard.FreeSpace(newPosition, transform);
+    }
+
+    bool ActivelyFalling()
+    {
+        return activeLeftBlock.GetComponent<Block>().activelyFalling || activeRightBlock.GetComponent<Block>().activelyFalling;
+    }
+
+    private void DropBlocks()
+    {
+        foreach (Transform block in transform)
         {
-            int newDirection = (-direction + 4 + orientation) % 4;
-            Vector3 testPositionOffset = Vector3.zero;
-            if (newDirection == 0) testPositionOffset = new Vector3(1, 0, 0);
-            else if (newDirection == 1) testPositionOffset = new Vector3(0, 1, 0);
-            else if (newDirection == 2) testPositionOffset = new Vector3(-1, 0, 0);
-            else if (newDirection == 3) testPositionOffset = new Vector3(0, -1, 0);
-
-            Vector3 testPosition = leftBlock.transform.localPosition + testPositionOffset;
-            Vector3 movePosition = leftBlock.transform.position + testPositionOffset;
-            if (testPosition.x < leftBlock.transform.position.x || testPosition.x >= BlockWell.width)
-            {
-
-                DoSwap();
-                return;
-            }
-            if (testPosition.x < 0)
-            {
-                testPosition.x = 0;
-            }
-            float newTestColumnHeight = _wellHandler.currentColumnHeights[Mathf.FloorToInt(testPosition.x)];
-            if (testPosition.y < newTestColumnHeight)
-            {
-                DoSwap();
-                Debug.Log("here do swap");
-                return;
-            }
-
-            orientation = (newDirection + 2) % 4;
-            rightBlock.column = leftBlock.column;
-            rightBlock.transform.position = leftBlock.transform.position;
-            leftBlock.column = Mathf.FloorToInt(testPosition.x);
-            leftBlock.transform.position = movePosition;
+            block.gameObject.GetComponent<Block>().DropToFloor();
         }
     }
-    void DoSwap()
+
+    private void BlockPairLanded()
     {
-        orientation = (orientation + 2) % 4;
-        int tempColumn = rightBlock.column;
-        Vector3 tempPosition = rightBlock.transform.position;
-        rightBlock.column = leftBlock.column;
-        rightBlock.transform.position = leftBlock.transform.position;
-        leftBlock.column = tempColumn;
-        leftBlock.transform.position = tempPosition;
+        isFalling = false;
+        DropBlocks();
+        StartCoroutine(SpawnNextBlock());
     }
+
+    void ClearCurrentGameboardPosition()
+    {
+        foreach (Transform block in transform)
+        {
+            _blockBoard.Clear(block.transform.position.x, block.transform.position.y);
+        }
+    }
+
+    void UpdateGameBoard()
+    {
+        foreach (Transform block in transform)
+        {
+            _blockBoard.Add(block.position.x, block.position.y, block);
+        }
+    }
+
+    IEnumerator SpawnNextBlock()
+    {
+        yield return new WaitUntil(() => !ActivelyFalling());
+        spawnNextEvent.Invoke();
+        //GameObject.Find("PuyoSpawner").GetComponent<PuyoSpawner>().SpawnPuyo();
+    }
+
+    public Vector3 RoundVector(Vector3 vect)
+    {
+        return new Vector2(Mathf.Round(vect.x), Mathf.Round(vect.y));
+    }
+
+
 }
