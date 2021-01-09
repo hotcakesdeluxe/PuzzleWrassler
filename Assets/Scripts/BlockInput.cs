@@ -29,6 +29,14 @@ public class BlockInput : MonoBehaviour
             _currentBlockPair.TryHorizontalMove(Vector3.right);
             rightHoldTime = 0;
         }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            _currentBlockPair.TryRotate(1);
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            _currentBlockPair.TryRotate(-1);
+        }
         //held button
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
@@ -45,14 +53,6 @@ public class BlockInput : MonoBehaviour
             {
                 _currentBlockPair.TryHorizontalMove(Vector3.right);
             }
-        }
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            _currentBlockPair.TryRotate(1);
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            _currentBlockPair.TryRotate(-1);
         }
     }
 }

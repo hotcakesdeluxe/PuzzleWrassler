@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFalling: 1
-  fallSpeed: 1
+  fallSpeed: 0.5
   fallSpeedMultiplier: 1
   activeLeftBlock: {fileID: 0}
   activeRightBlock: {fileID: 0}

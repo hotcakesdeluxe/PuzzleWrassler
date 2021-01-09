@@ -7,7 +7,7 @@ public class BlockPair : MonoBehaviour
 {
     public bool isFalling = true;
     public float fallSpeed = 0.5f;
-    public float fallSpeedMultiplier = 5f;
+    public float fallSpeedMultiplier = 1f;
     private BlockBoard _blockBoard;
     public Block activeLeftBlock;
     public Block activeRightBlock;
@@ -28,6 +28,12 @@ public class BlockPair : MonoBehaviour
         if (isFalling)
         {
             float actualFallSpeed = Mathf.Min(30f, fallSpeed * fallSpeedMultiplier);
+            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            {
+                actualFallSpeed = Mathf.Max(10f, actualFallSpeed);
+            }
+
+            Debug.Log(actualFallSpeed);
             if (ValidMove(Vector3.down))
             {
                 ClearCurrentGameboardPosition();
@@ -41,6 +47,7 @@ public class BlockPair : MonoBehaviour
         }
 
     }
+
     public void TryHorizontalMove(Vector3 direction)
     {
         if (ValidMove(direction))
@@ -53,7 +60,7 @@ public class BlockPair : MonoBehaviour
     public void TryRotate(int direction)
     {
         Vector3 rotateVector;
-        if(direction > 0)
+        if (direction > 0)
         {
             rotateVector = GetCounterClockwiseRotationVector(activeRightBlock.transform);
         }
@@ -61,14 +68,14 @@ public class BlockPair : MonoBehaviour
         {
             rotateVector = GetClockwiseRotationVector(activeRightBlock.transform);
         }
-        
-        if(ValidRotate(rotateVector))
+
+        if (ValidRotate(rotateVector))
         {
             ClearCurrentGameboardPosition();
             activeRightBlock.transform.position += rotateVector;
             UpdateGameBoard();
         }
-        
+
     }
     Vector3 GetClockwiseRotationVector(Transform block)
     {
@@ -98,7 +105,7 @@ public class BlockPair : MonoBehaviour
     {
         Vector3 blockPos = RoundVector(block.position);
         Debug.Log(Vector3.Distance(blockPos + Vector3.left, transform.position));
-        if (Vector3.Distance(blockPos + Vector3.left, transform.position)< 1)
+        if (Vector3.Distance(blockPos + Vector3.left, transform.position) < 1)
         {
             return new Vector3(-1, +1);
         }
