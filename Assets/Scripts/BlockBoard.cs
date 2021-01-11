@@ -9,6 +9,7 @@ public class BlockBoard : MonoBehaviour
     public Transform[,] blockGrid;
     void Awake()
     {
+        width += (int)transform.position.x;
         blockGrid = new Transform[width, height];
     }
 
@@ -33,7 +34,7 @@ public class BlockBoard : MonoBehaviour
 
     public bool IsEmpty(int col, int row)
     {
-        Debug.Log(col + " ," + row + " is empty?");
+        //Debug.Log(col + " ," + row + " is empty?");
         if (WithinBorders(new Vector3(col, row, 0)))
         {
             return blockGrid[col, row] == null;
@@ -71,9 +72,9 @@ public class BlockBoard : MonoBehaviour
     {
         List<Transform> groupToDelete = new List<Transform>();
 
-        for (int row = 0; row < 12; row++)
+        for (int row = 0; row < height; row++)
         {
-            for (int col = 0; col < 6; col++)
+            for (int col = (int)transform.position.x; col < width; col++)
             {
                 List<Transform> currentGroup = new List<Transform>();
 
@@ -110,9 +111,9 @@ public class BlockBoard : MonoBehaviour
 
     public void DropAllColumns()
     {
-        for (int row = 0; row < 12; row++)
+        for (int row = 0; row < height; row++)
         {
-            for (int col = 0; col < 6; col++)
+            for (int col = (int)transform.position.x; col < width; col++)
             {
                 if (blockGrid[col, row] != null)
                 {
@@ -157,9 +158,9 @@ public class BlockBoard : MonoBehaviour
 
     public bool AnyFallingBlocks()
     {
-        for (int row = 11; row >= 0; row--)
+        for (int row = height; row >= 0; row--)
         {
-            for (int col = 0; col < 6; col++)
+            for (int col = (int)transform.position.x; col < width; col++)
             {
                 if (blockGrid[col, row] != null)
                 {
@@ -180,15 +181,17 @@ public class BlockBoard : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        for (int i = 1; i < height + 2; i++)
+        if (!Application.isPlaying)
         {
-            Debug.DrawLine(new Vector3(this.transform.position.x - 0.5f, i - 0.5f, 0), new Vector3((this.transform.position.x + width) - 0.5f, i - 0.5f, 0), Color.white);
+            for (int i = 1; i < height + 2; i++)
+            {
+                Debug.DrawLine(new Vector3(this.transform.position.x - 0.5f, i - 0.5f, 0), new Vector3((this.transform.position.x + width) - 0.5f, i - 0.5f, 0), Color.white);
+            }
+            for (int i = 0; i < width + 1; i++)
+            {
+                Debug.DrawLine(new Vector3((this.transform.position.x + i) - 0.5f, 0.5f, 0), new Vector3((this.transform.position.x + i) - 0.5f, height + 0.5f, 0), Color.white);
+            }
         }
-        for (int i = 0; i < width + 1; i++)
-        {
-            Debug.DrawLine(new Vector3((this.transform.position.x + i) - 0.5f, 0.5f, 0), new Vector3((this.transform.position.x + i) - 0.5f, height + 0.5f, 0), Color.white);
-        }
-
     }
     public void DebugBoard()
     {

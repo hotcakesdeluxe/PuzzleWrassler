@@ -24,7 +24,7 @@ public class BlockPair : MonoBehaviour
     }
     void Update()
     {
-        _blockBoard.DebugBoard();
+        //_blockBoard.DebugBoard();
         if (isFalling)
         {
             float actualFallSpeed = Mathf.Min(30f, fallSpeed * fallSpeedMultiplier);
@@ -180,6 +180,7 @@ public class BlockPair : MonoBehaviour
     {
         foreach (Transform block in transform)
         {
+            Debug.Log(block.localPosition.x + " ," + block.localPosition.y + " block pos");
             _blockBoard.Add(block.position.x, block.position.y, block);
         }
     }

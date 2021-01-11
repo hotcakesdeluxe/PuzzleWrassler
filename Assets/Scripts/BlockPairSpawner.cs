@@ -21,7 +21,7 @@ public class BlockPairSpawner : MonoBehaviour
         {
             StartCoroutine(DelayDelete());
         }
-        activeBlockPair = GameObject.Instantiate<BlockPair>(_blockPairPrefab, transform.position, Quaternion.identity);
+        activeBlockPair = GameObject.Instantiate<BlockPair>(_blockPairPrefab, transform.position, Quaternion.identity, transform.parent);
         activeBlockPair.Initialize(_blockboard, GetFreshBlock(), GetFreshBlock());
         activeBlockPair.spawnNextEvent.AddListener(SpawnBlockPair);
     }
