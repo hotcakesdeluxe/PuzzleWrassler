@@ -32,8 +32,6 @@ public class BlockPair : MonoBehaviour
             {
                 actualFallSpeed = Mathf.Max(10f, actualFallSpeed);
             }
-
-            Debug.Log(actualFallSpeed);
             if (ValidMove(Vector3.down))
             {
                 ClearCurrentGameboardPosition();
@@ -80,7 +78,7 @@ public class BlockPair : MonoBehaviour
     Vector3 GetClockwiseRotationVector(Transform block)
     {
         Vector3 blockPos = RoundVector(block.position);
-        Debug.Log(Vector3.Distance(blockPos + Vector3.left, transform.position));
+
         if (Vector3.Distance(blockPos + Vector3.left, transform.position) < 1)
         {
             return new Vector3(-1, -1);
@@ -104,7 +102,7 @@ public class BlockPair : MonoBehaviour
     Vector3 GetCounterClockwiseRotationVector(Transform block)
     {
         Vector3 blockPos = RoundVector(block.position);
-        Debug.Log(Vector3.Distance(blockPos + Vector3.left, transform.position));
+
         if (Vector3.Distance(blockPos + Vector3.left, transform.position) < 1)
         {
             return new Vector3(-1, +1);
@@ -129,12 +127,11 @@ public class BlockPair : MonoBehaviour
     {
         foreach (Transform block in transform)
         {
-            Vector3 newPosition = new Vector3(block.position.x + direction.x, block.position.y + direction.y, 0);
-            if (block.position.y + direction.y <= 0)
+            Vector3 newPosition = new Vector3(block.position.x + direction.x, Mathf.FloorToInt(block.position.y) + direction.y, 0);
+            /*if (block.position.y + direction.y <= 0)
             {
                 return false;
-            }
-
+            }*/
             if (!_blockBoard.FreeSpace(newPosition, transform))
             {
                 return false;
@@ -165,6 +162,7 @@ public class BlockPair : MonoBehaviour
 
     private void BlockPairLanded()
     {
+        transform.position = new Vector3(Mathf.Round(transform.position.x),Mathf.FloorToInt(transform.position.y), transform.position.z);
         isFalling = false;
         DropBlocks();
         StartCoroutine(SpawnNextBlock());

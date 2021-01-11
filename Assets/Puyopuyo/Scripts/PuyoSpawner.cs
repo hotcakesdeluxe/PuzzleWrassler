@@ -13,35 +13,44 @@ public class PuyoSpawner : MonoBehaviour
         SpawnPuyo();
     }
 
-    public void SpawnPuyo(){
-        if(GameBoard.WhatToDelete()){
+    public void SpawnPuyo()
+    {
+        if (GameBoard.WhatToDelete())
+        {
             StartCoroutine(DelayDelete());
         }
 
         StartCoroutine(DelaySpawn());
     }
 
-    private bool GameIsOver(){
-        return 
+    private bool GameIsOver()
+    {
+        return
             GameBoard.gameBoard[(int)transform.position.x, (int)transform.position.y] != null ||
             GameBoard.gameBoard[(int)transform.position.x + 1, (int)transform.position.y] != null;
     }
 
-    IEnumerator DelayDelete(){
+    IEnumerator DelayDelete()
+    {
         GameBoard.DropAllColumns();
         yield return new WaitUntil(() => !GameBoard.AnyFallingBlocks());
-        if(GameBoard.WhatToDelete()){
+        if (GameBoard.WhatToDelete())
+        {
             StartCoroutine(DelayDelete());
         };
 
     }
 
-    IEnumerator DelaySpawn(){
+    IEnumerator DelaySpawn()
+    {
         yield return new WaitUntil(() => !GameBoard.AnyFallingBlocks() && !GameBoard.WhatToDelete());
-        if(GameIsOver()){
+        if (GameIsOver())
+        {
             GameObject.Find("GameOverCanvas").GetComponent<CanvasGroup>().alpha = 1;
-            enabled = false; 
-        } else {
+            enabled = false;
+        }
+        else
+        {
             activePuyo = Instantiate((GameObject)Resources.Load("Puyo"), transform.position, Quaternion.identity).GetComponent<Puyo>();
         }
     }

@@ -24,15 +24,11 @@ public class Block : MonoBehaviour
     {
         WaitForSeconds wait = new WaitForSeconds(.25f);
         Vector3 currentPos = RoundVector(gameObject.transform.position);
-        Debug.Log( Mathf.FloorToInt(currentPos.y) + " block pos");
-        for (int row = Mathf.FloorToInt(currentPos.y) - 2; row >= 0; row--)
+        for (int row = Mathf.FloorToInt(currentPos.y) - 1; row >= 0; row--)
         {
             int currentX = Mathf.FloorToInt(currentPos.x);
-            Debug.Log(currentX + " current x");
-            Debug.Log(row + " row minus one");
             if (_blockBoard.IsEmpty(currentX, row))
             {
-                Debug.Log("drop drop drop");
                 forcedDownwards = true;
                 _blockBoard.Clear(currentX, row+1);
                 _blockBoard.Add(currentX, row, gameObject.transform);
