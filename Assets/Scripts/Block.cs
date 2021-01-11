@@ -5,7 +5,7 @@ using PHL.Common.Utility;
 
 public class Block : MonoBehaviour
 {
-    public string blockType { get; private set; }
+    public string blockType;
     private MeshRenderer _meshRenderer;
     private BlockBoard _blockBoard;
     public bool activelyFalling = true;
@@ -16,7 +16,7 @@ public class Block : MonoBehaviour
     public void Initialize(BlockBoard blockBoard)
     {
         _blockBoard = blockBoard;
-        blockType = GetRandomElement();
+        //blockType = GetRandomElement();
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshRenderer.material.SetColor("_Color", GetColorByType(blockType));
     }

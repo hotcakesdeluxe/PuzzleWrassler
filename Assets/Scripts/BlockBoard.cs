@@ -4,21 +4,23 @@ using UnityEngine;
 using UnityEngine.UI;
 public class BlockBoard : MonoBehaviour
 {
-    public int width = 8;
-    public int height = 12;
+    private int _width = 8;
+    private int _height = 12;
+    public MeshRenderer leftPreviewBlock;
+    public MeshRenderer rightPreviewBlock;
     public Transform[,] blockGrid;
     void Awake()
     {
-        width += (int)transform.position.x;
-        blockGrid = new Transform[width, height];
+        _width += (int)transform.position.x;
+        blockGrid = new Transform[_width, _height];
     }
 
     public bool WithinBorders(Vector3 target)
     {
         return target.x > -1 &&
-            target.x < width &&
+            target.x < _width &&
             target.y > -1 &&
-            target.y < height + 1;
+            target.y < _height + 1;
     }
 
     public bool FreeSpace(Vector3 target, Transform parentTransform)
@@ -72,9 +74,9 @@ public class BlockBoard : MonoBehaviour
     {
         List<Transform> groupToDelete = new List<Transform>();
 
-        for (int row = 0; row < height; row++)
+        for (int row = 0; row < _height; row++)
         {
-            for (int col = (int)transform.position.x; col < width; col++)
+            for (int col = (int)transform.position.x; col < _width; col++)
             {
                 List<Transform> currentGroup = new List<Transform>();
 
@@ -111,9 +113,9 @@ public class BlockBoard : MonoBehaviour
 
     public void DropAllColumns()
     {
-        for (int row = 0; row < height; row++)
+        for (int row = 0; row < _height; row++)
         {
-            for (int col = (int)transform.position.x; col < width; col++)
+            for (int col = (int)transform.position.x; col < _width; col++)
             {
                 if (blockGrid[col, row] != null)
                 {
@@ -158,9 +160,9 @@ public class BlockBoard : MonoBehaviour
 
     public bool AnyFallingBlocks()
     {
-        for (int row = height; row >= 0; row--)
+        for (int row = _height; row >= 0; row--)
         {
-            for (int col = (int)transform.position.x; col < width; col++)
+            for (int col = (int)transform.position.x; col < _width; col++)
             {
                 if (blockGrid[col, row] != null)
                 {
@@ -183,13 +185,13 @@ public class BlockBoard : MonoBehaviour
     {
         if (!Application.isPlaying)
         {
-            for (int i = 1; i < height + 2; i++)
+            for (int i = 1; i < _height + 2; i++)
             {
-                Debug.DrawLine(new Vector3(this.transform.position.x - 0.5f, i - 0.5f, 0), new Vector3((this.transform.position.x + width) - 0.5f, i - 0.5f, 0), Color.white);
+                Debug.DrawLine(new Vector3(this.transform.position.x - 0.5f, i - 0.5f, 0), new Vector3((this.transform.position.x + _width) - 0.5f, i - 0.5f, 0), Color.white);
             }
-            for (int i = 0; i < width + 1; i++)
+            for (int i = 0; i < _width + 1; i++)
             {
-                Debug.DrawLine(new Vector3((this.transform.position.x + i) - 0.5f, 0.5f, 0), new Vector3((this.transform.position.x + i) - 0.5f, height + 0.5f, 0), Color.white);
+                Debug.DrawLine(new Vector3((this.transform.position.x + i) - 0.5f, 0.5f, 0), new Vector3((this.transform.position.x + i) - 0.5f, _height + 0.5f, 0), Color.white);
             }
         }
     }
@@ -198,10 +200,10 @@ public class BlockBoard : MonoBehaviour
         Text text = GameObject.Find("Text").GetComponent<Text>();
         string boardContents = "";
 
-        for (int row = height - 1; row >= 0; row--)
+        for (int row = _height - 1; row >= 0; row--)
         {
             boardContents += $"{row} :";
-            for (int col = 0; col < width; col++)
+            for (int col = 0; col < _width; col++)
             {
                 if (blockGrid[col, row] == null)
                 {

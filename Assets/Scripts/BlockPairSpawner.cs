@@ -4,28 +4,40 @@ using UnityEngine;
 
 public class BlockPairSpawner : MonoBehaviour
 {
-    [SerializeField] private BlockBoard _blockboard;
+    [SerializeField] private BlockBoard _blockBoard;
     [SerializeField] private BlockPair _blockPairPrefab;
     [SerializeField] private Block _blockPrefab;
+    private string _previewLeftType;
+    private string _previewRightType;
     public BlockPair activeBlockPair { get; private set; }
     Stack<Block> blockObjectPool = new Stack<Block>();
     // Start is called before the first frame update
     void Start()
     {
+        InitializePreviewBlocks();
         SpawnBlockPair();
     }
 
     public void SpawnBlockPair()
     {
-        if (_blockboard.WhatToDelete())
+        if (_blockBoard.WhatToDelete())
         {
             StartCoroutine(DelayDelete());
         }
         activeBlockPair = GameObject.Instantiate<BlockPair>(_blockPairPrefab, transform.position, Quaternion.identity, transform.parent);
-        activeBlockPair.Initialize(_blockboard, GetFreshBlock(), GetFreshBlock());
+        activeBlockPair.Initialize(_blockBoard, GetFreshBlock(_previewLeftType), GetFreshBlock(_previewRightType));
         activeBlockPair.spawnNextEvent.AddListener(SpawnBlockPair);
+        InitializePreviewBlocks();
     }
-    private Block GetFreshBlock()
+    public void InitializePreviewBlocks()
+    {
+        _previewLeftType = GetRandomElement();
+        _previewRightType = GetRandomElement();
+        _blockBoard.leftPreviewBlock.material.SetColor("_Color", GetColorByType(_previewLeftType));
+        _blockBoard.rightPreviewBlock.material.SetColor("_Color", GetColorByType(_previewRightType));
+    }
+
+    private Block GetFreshBlock(string type)
     {
         Block retObj;
 
@@ -41,7 +53,7 @@ public class BlockPairSpawner : MonoBehaviour
 
         retObj.gameObject.SetActive(true);
         retObj.enabled = true;
-
+        retObj.blockType = type;
         return retObj;
     }
 
@@ -59,15 +71,43 @@ public class BlockPairSpawner : MonoBehaviour
     private bool GameIsOver()
     {
         return
-            _blockboard.blockGrid[(int)transform.position.x, (int)transform.position.y] != null ||
-            _blockboard.blockGrid[(int)transform.position.x + 1, (int)transform.position.y] != null;
+            _blockBoard.blockGrid[(int)transform.position.x, (int)transform.position.y] != null ||
+            _blockBoard.blockGrid[(int)transform.position.x + 1, (int)transform.position.y] != null;
+    }
+
+    private string GetRandomElement()
+    {
+        float randomVal = Random.value * 4;
+        if (randomVal <= 1) return "earth";
+        else if (randomVal <= 2) return "air";
+        else if (randomVal <= 3) return "water";
+        else return "fire";
+    }
+    private Color GetColorByType(string type)
+    {
+        if (type == "earth")
+        {
+            return Color.green;
+        }
+        else if (type == "air")
+        {
+            return Color.cyan;
+        }
+        else if (type == "water")
+        {
+            return Color.blue;
+        }
+        else
+        {
+            return Color.red;
+        }
     }
 
     IEnumerator DelayDelete()
     {
-        _blockboard.DropAllColumns();
-        yield return new WaitUntil(() => !_blockboard.AnyFallingBlocks());
-        if (_blockboard.WhatToDelete())
+        _blockBoard.DropAllColumns();
+        yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks());
+        if (_blockBoard.WhatToDelete())
         {
             StartCoroutine(DelayDelete());
         };
@@ -76,7 +116,7 @@ public class BlockPairSpawner : MonoBehaviour
 
     IEnumerator DelaySpawn()
     {
-        yield return new WaitUntil(() => !_blockboard.AnyFallingBlocks() && !_blockboard.WhatToDelete());
+        yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks() && !_blockBoard.WhatToDelete());
         if (GameIsOver())
         {
             //GameObject.Find("GameOverCanvas").GetComponent<CanvasGroup>().alpha = 1;

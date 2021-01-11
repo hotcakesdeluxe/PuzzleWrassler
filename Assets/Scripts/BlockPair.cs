@@ -12,6 +12,7 @@ public class BlockPair : MonoBehaviour
     public Block activeLeftBlock;
     public Block activeRightBlock;
     public SecureEvent spawnNextEvent { get; private set; } = new SecureEvent();
+
     public void Initialize(BlockBoard blockboard, Block leftBlock, Block rightBlock)
     {
         _blockBoard = blockboard;
@@ -22,6 +23,7 @@ public class BlockPair : MonoBehaviour
         rightBlock.transform.position = new Vector3(transform.position.x + 1, transform.position.y, transform.position.z);
         UpdateGameBoard();
     }
+
     void Update()
     {
         //_blockBoard.DebugBoard();
@@ -162,7 +164,7 @@ public class BlockPair : MonoBehaviour
 
     private void BlockPairLanded()
     {
-        transform.position = new Vector3(Mathf.Round(transform.position.x),Mathf.FloorToInt(transform.position.y), transform.position.z);
+        transform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.FloorToInt(transform.position.y), transform.position.z);
         isFalling = false;
         DropBlocks();
         StartCoroutine(SpawnNextBlock());
@@ -180,10 +182,11 @@ public class BlockPair : MonoBehaviour
     {
         foreach (Transform block in transform)
         {
-            Debug.Log(block.localPosition.x + " ," + block.localPosition.y + " block pos");
+            //Debug.Log(block.localPosition.x + " ," + block.localPosition.y + " block pos");
             _blockBoard.Add(block.position.x, block.position.y, block);
         }
     }
+
 
     IEnumerator SpawnNextBlock()
     {
