@@ -99,6 +99,7 @@ public class BlockBoard : MonoBehaviour
         }
         if (groupToDelete.Count != 0)
         {
+            Debug.Log(groupToDelete.Count);
             DeleteUnits(groupToDelete);
             return true;
         }

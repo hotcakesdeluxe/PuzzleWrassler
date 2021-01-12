@@ -26,8 +26,12 @@ public class BlockPairSpawner : MonoBehaviour
         }
         activeBlockPair = GameObject.Instantiate<BlockPair>(_blockPairPrefab, transform.position, Quaternion.identity, transform.parent);
         activeBlockPair.Initialize(_blockBoard, GetFreshBlock(_previewLeftType), GetFreshBlock(_previewRightType));
-        activeBlockPair.spawnNextEvent.AddListener(SpawnBlockPair);
+        activeBlockPair.spawnNextEvent.AddListener(DelaySpawn);
         InitializePreviewBlocks();
+    }
+    private void DelaySpawn()
+    {
+        StartCoroutine(DelaySpawnRoutine());
     }
     public void InitializePreviewBlocks()
     {
@@ -70,6 +74,7 @@ public class BlockPairSpawner : MonoBehaviour
     }
     private bool GameIsOver()
     {
+        Debug.Log(_blockBoard.blockGrid[(int)transform.position.x, (int)transform.position.y]);
         return
             _blockBoard.blockGrid[(int)transform.position.x, (int)transform.position.y] != null ||
             _blockBoard.blockGrid[(int)transform.position.x + 1, (int)transform.position.y] != null;
@@ -114,9 +119,10 @@ public class BlockPairSpawner : MonoBehaviour
 
     }
 
-    IEnumerator DelaySpawn()
+    IEnumerator DelaySpawnRoutine()
     {
         yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks() && !_blockBoard.WhatToDelete());
+        Debug.Log(GameIsOver());
         if (GameIsOver())
         {
             //GameObject.Find("GameOverCanvas").GetComponent<CanvasGroup>().alpha = 1;
