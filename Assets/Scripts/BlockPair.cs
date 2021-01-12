@@ -5,6 +5,7 @@ using PHL.Common.Utility;
 
 public class BlockPair : MonoBehaviour
 {
+    public bool isFastDropping = false;
     public bool isFalling = true;
     public float fallSpeed = 0.5f;
     public float fallSpeedMultiplier = 1f;
@@ -30,7 +31,7 @@ public class BlockPair : MonoBehaviour
         if (isFalling)
         {
             float actualFallSpeed = Mathf.Min(30f, fallSpeed * fallSpeedMultiplier);
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            if (isFastDropping)
             {
                 actualFallSpeed = Mathf.Max(10f, actualFallSpeed);
             }
