@@ -9,6 +9,7 @@ public class BlockBoard : MonoBehaviour
     public MeshRenderer leftPreviewBlock;
     public MeshRenderer rightPreviewBlock;
     public Transform[,] blockGrid;
+    public Text debugText;
     void Awake()
     {
         _width += (int)transform.position.x;
@@ -17,17 +18,16 @@ public class BlockBoard : MonoBehaviour
 
     public bool WithinBorders(Vector3 target)
     {
-        return target.x > -1 &&
+        return target.x > (int)transform.position.x - 1 &&
             target.x < _width &&
             target.y > -1 &&
-            target.y < _height + 1;
+            target.y < _height;
     }
 
     public bool FreeSpace(Vector3 target, Transform parentTransform)
     {
         if (WithinBorders(target))
         {
-            //Debug.Log(Mathf.FloorToInt(target.x)+ " ,"+ Mathf.FloorToInt(target.y));
             return blockGrid[Mathf.FloorToInt(target.x), Mathf.FloorToInt(target.y)] == null ||
                 blockGrid[Mathf.FloorToInt(target.x), Mathf.FloorToInt(target.y)].parent == parentTransform;
         }
@@ -36,7 +36,6 @@ public class BlockBoard : MonoBehaviour
 
     public bool IsEmpty(int col, int row)
     {
-        //Debug.Log(col + " ," + row + " is empty?");
         if (WithinBorders(new Vector3(col, row, 0)))
         {
             return blockGrid[col, row] == null;
@@ -74,7 +73,7 @@ public class BlockBoard : MonoBehaviour
     {
         List<Transform> groupToDelete = new List<Transform>();
 
-        for (int row = 0; row < _height; row++)
+        for (int row = 0; row < _height-1; row++)
         {
             for (int col = (int)transform.position.x; col < _width; col++)
             {
@@ -94,12 +93,10 @@ public class BlockBoard : MonoBehaviour
                     foreach (Transform block in currentGroup)
                     {
                         groupToDelete.Add(block);
-                        Debug.Log(block.position.x + " ," + block.position.y);
                     }
                 }
             }
         }
-        Debug.Log("what to delete");
         if (groupToDelete.Count != 0)
         {
             DeleteUnits(groupToDelete);
@@ -113,7 +110,7 @@ public class BlockBoard : MonoBehaviour
 
     public void DropAllColumns()
     {
-        for (int row = 0; row < _height; row++)
+        for (int row = 0; row < _height-1; row++)
         {
             for (int col = (int)transform.position.x; col < _width; col++)
             {
@@ -160,7 +157,7 @@ public class BlockBoard : MonoBehaviour
 
     public bool AnyFallingBlocks()
     {
-        for (int row = _height; row >= 0; row--)
+        for (int row = _height-1; row >= 0; row--)
         {
             for (int col = (int)transform.position.x; col < _width; col++)
             {
@@ -197,13 +194,13 @@ public class BlockBoard : MonoBehaviour
     }
     public void DebugBoard()
     {
-        Text text = GameObject.Find("Text").GetComponent<Text>();
+        //Text text = GameObject.Find("Text").GetComponent<Text>();
         string boardContents = "";
 
         for (int row = _height - 1; row >= 0; row--)
         {
             boardContents += $"{row} :";
-            for (int col = 0; col < _width; col++)
+            for (int col = (int)transform.position.x; col < _width; col++)
             {
                 if (blockGrid[col, row] == null)
                 {
@@ -218,6 +215,6 @@ public class BlockBoard : MonoBehaviour
             }
             boardContents += "\n";
         }
-        text.text = boardContents;
+        debugText.text = boardContents;
     }
 }

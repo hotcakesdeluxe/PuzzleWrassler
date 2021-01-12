@@ -26,7 +26,7 @@ public class BlockPair : MonoBehaviour
 
     void Update()
     {
-        //_blockBoard.DebugBoard();
+        _blockBoard.DebugBoard();
         if (isFalling)
         {
             float actualFallSpeed = Mathf.Min(30f, fallSpeed * fallSpeedMultiplier);
