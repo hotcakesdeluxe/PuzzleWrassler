@@ -7,11 +7,11 @@
             "actions": [
                 {
                     "name": "MoveLeft",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "b9031051-10e3-465b-815b-7f2b66750c00",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Hold"
+                    "interactions": ""
                 },
                 {
                     "name": "MoveRight",
@@ -53,7 +53,7 @@
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
-                    "groups": "SplitKeyboard",
+                    "groups": "Player1Keyboard",
                     "action": "MoveLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -82,11 +82,22 @@
                 },
                 {
                     "name": "",
+                    "id": "1edbaae0-de98-45f9-8e8e-b45a847c87fe",
+                    "path": "<Keyboard>/j",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Player2Keyboard",
+                    "action": "MoveLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "7d40cf7a-5aec-4471-bf63-3c300cd9e5c7",
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
-                    "groups": "SplitKeyboard",
+                    "groups": "Player1Keyboard",
                     "action": "MoveRight",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -115,11 +126,22 @@
                 },
                 {
                     "name": "",
+                    "id": "8525c66e-9159-4d26-b2a4-ae4bd63de95b",
+                    "path": "<Keyboard>/l",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Player2Keyboard",
+                    "action": "MoveRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "4096716d-8600-4b33-b38f-80363907c8ba",
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
-                    "groups": "SplitKeyboard",
+                    "groups": "Player1Keyboard",
                     "action": "RotateLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -137,11 +159,22 @@
                 },
                 {
                     "name": "",
+                    "id": "40a109ab-323f-4902-ae46-b73e0baee1ae",
+                    "path": "<Keyboard>/u",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Player2Keyboard",
+                    "action": "RotateLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "14574692-d283-4d1f-a2e8-2c3b3c080518",
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
-                    "groups": "SplitKeyboard",
+                    "groups": "Player1Keyboard",
                     "action": "RotateRight",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -159,11 +192,22 @@
                 },
                 {
                     "name": "",
+                    "id": "9e5301c7-4000-4d4c-9914-81679b06118f",
+                    "path": "<Keyboard>/o",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Player2Keyboard",
+                    "action": "RotateRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "4e30588d-5e85-4ece-9e96-9a76a2517499",
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
-                    "groups": "SplitKeyboard",
+                    "groups": "Player1Keyboard",
                     "action": "Drop",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -189,14 +233,25 @@
                     "action": "Drop",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "995d7238-2e75-40a6-a7df-850ed26cfdb3",
+                    "path": "<Keyboard>/k",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Player2Keyboard",
+                    "action": "Drop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
     ],
     "controlSchemes": [
         {
-            "name": "SplitKeyboard",
-            "bindingGroup": "SplitKeyboard",
+            "name": "Player1Keyboard",
+            "bindingGroup": "Player1Keyboard",
             "devices": [
                 {
                     "devicePath": "<Keyboard>",
@@ -211,6 +266,17 @@
             "devices": [
                 {
                     "devicePath": "<Gamepad>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "Player2Keyboard",
+            "bindingGroup": "Player2Keyboard",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
                     "isOptional": false,
                     "isOR": false
                 }

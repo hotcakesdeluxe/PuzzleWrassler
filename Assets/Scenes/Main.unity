@@ -1585,7 +1585,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 865316674}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.5, y: 5.4453545, z: -0.45223808}
+  m_LocalPosition: {x: 6.63, y: 5.4453545, z: -0.45223808}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1804244374}
@@ -2424,7 +2424,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8862656127089180277, guid: 6a025f3b5ff092e4caa6a77a89850641, type: 3}
       propertyPath: m_DefaultControlScheme
-      value: Gamepad
+      value: Player2Keyboard
       objectReference: {fileID: 0}
     - target: {fileID: 8862656127089180278, guid: 6a025f3b5ff092e4caa6a77a89850641, type: 3}
       propertyPath: m_Name
@@ -2818,7 +2818,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8862656127089180277, guid: 6a025f3b5ff092e4caa6a77a89850641, type: 3}
       propertyPath: m_DefaultControlScheme
-      value: SplitKeyboard
+      value: Player1Keyboard
       objectReference: {fileID: 0}
     - target: {fileID: 8862656127089180278, guid: 6a025f3b5ff092e4caa6a77a89850641, type: 3}
       propertyPath: m_Name
