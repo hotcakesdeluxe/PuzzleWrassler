@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using PHL.Common.Utility;
 public class BlockBoard : MonoBehaviour
 {
     private int _width = 8;
@@ -10,6 +11,7 @@ public class BlockBoard : MonoBehaviour
     public MeshRenderer rightPreviewBlock;
     public Transform[,] blockGrid;
     public Text debugText;
+    public SecureEvent<int> scoreUpdateEvent{get; private set;} = new SecureEvent<int>();
     void Awake()
     {
         _width += (int)transform.position.x;
@@ -99,7 +101,7 @@ public class BlockBoard : MonoBehaviour
         }
         if (groupToDelete.Count != 0)
         {
-            Debug.Log(groupToDelete.Count);
+            scoreUpdateEvent.Invoke(groupToDelete.Count);
             DeleteUnits(groupToDelete);
             return true;
         }

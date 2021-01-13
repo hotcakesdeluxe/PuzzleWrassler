@@ -74,7 +74,6 @@ public class BlockPairSpawner : MonoBehaviour
     }
     private bool GameIsOver()
     {
-        Debug.Log(_blockBoard.blockGrid[(int)transform.position.x, (int)transform.position.y]);
         return
             _blockBoard.blockGrid[(int)transform.position.x, (int)transform.position.y] != null ||
             _blockBoard.blockGrid[(int)transform.position.x + 1, (int)transform.position.y] != null;
@@ -122,7 +121,6 @@ public class BlockPairSpawner : MonoBehaviour
     IEnumerator DelaySpawnRoutine()
     {
         yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks() && !_blockBoard.WhatToDelete());
-        Debug.Log(GameIsOver());
         if (GameIsOver())
         {
             //GameObject.Find("GameOverCanvas").GetComponent<CanvasGroup>().alpha = 1;
