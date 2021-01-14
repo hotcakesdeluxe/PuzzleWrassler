@@ -24,15 +24,9 @@ public class BlockPairSpawner : MonoBehaviour
         {
             StartCoroutine(DelayDelete());
         }
-        activeBlockPair = GameObject.Instantiate<BlockPair>(_blockPairPrefab, transform.position, Quaternion.identity, transform.parent);
-        activeBlockPair.Initialize(_blockBoard, GetFreshBlock(_previewLeftType), GetFreshBlock(_previewRightType));
-        activeBlockPair.spawnNextEvent.AddListener(DelaySpawn);
-        InitializePreviewBlocks();
-    }
-    private void DelaySpawn()
-    {
         StartCoroutine(DelaySpawnRoutine());
     }
+
     public void InitializePreviewBlocks()
     {
         _previewLeftType = GetRandomElement();
@@ -114,7 +108,7 @@ public class BlockPairSpawner : MonoBehaviour
         if (_blockBoard.WhatToDelete())
         {
             StartCoroutine(DelayDelete());
-        };
+        }
 
     }
 
@@ -123,15 +117,15 @@ public class BlockPairSpawner : MonoBehaviour
         yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks() && !_blockBoard.WhatToDelete());
         if (GameIsOver())
         {
-            //GameObject.Find("GameOverCanvas").GetComponent<CanvasGroup>().alpha = 1;
-            //enabled = false;
             Debug.Log("Game Over");
         }
         else
         {
             //spawn
-            SpawnBlockPair();
-            //activeBlockPair = Instantiate((GameObject)Resources.Load("Puyo"), transform.position, Quaternion.identity).GetComponent<Puyo>();
+            activeBlockPair = GameObject.Instantiate<BlockPair>(_blockPairPrefab, transform.position, Quaternion.identity, transform.parent);
+            activeBlockPair.Initialize(_blockBoard, GetFreshBlock(_previewLeftType), GetFreshBlock(_previewRightType));
+            activeBlockPair.spawnNextEvent.AddListener(SpawnBlockPair);
+            InitializePreviewBlocks();
         }
     }
 }

@@ -80,8 +80,6 @@ public class PlayerBlockInput : MonoBehaviour
     }
     public void OnControlsChanged()
     {
-        Debug.Log("here");
-
         if (_playerInput.currentControlScheme != currentControlScheme)
         {
             currentControlScheme = _playerInput.currentControlScheme;
