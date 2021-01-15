@@ -7,11 +7,10 @@ public class BlockBoard : MonoBehaviour
 {
     private int _width = 8;
     private int _height = 12;
-    public MeshRenderer leftPreviewBlock;
-    public MeshRenderer rightPreviewBlock;
+    private bool _containsBreaker;
     public Transform[,] blockGrid;
     public Text debugText;
-    public SecureEvent<int> scoreUpdateEvent{get; private set;} = new SecureEvent<int>();
+    public SecureEvent<int> scoreUpdateEvent { get; private set; } = new SecureEvent<int>();
     void Awake()
     {
         _width += (int)transform.position.x;
@@ -53,6 +52,14 @@ public class BlockBoard : MonoBehaviour
         }
         return false;
     }
+    public bool BreakerMatches(int col, int row)
+    {
+        if (WithinBorders(new Vector3(col, row, 0)))
+        {
+            return blockGrid[col, row].tag == "Breaker";
+        }
+        return false;
+    }
 
     public void Clear(float col, float row)
     {
@@ -74,8 +81,7 @@ public class BlockBoard : MonoBehaviour
     public bool WhatToDelete()
     {
         List<Transform> groupToDelete = new List<Transform>();
-
-        for (int row = 0; row < _height-1; row++)
+        for (int row = 0; row < _height - 1; row++)
         {
             for (int col = (int)transform.position.x; col < _width; col++)
             {
@@ -113,7 +119,7 @@ public class BlockBoard : MonoBehaviour
 
     public void DropAllColumns()
     {
-        for (int row = 0; row < _height-1; row++)
+        for (int row = 0; row < _height - 1; row++)
         {
             for (int col = (int)transform.position.x; col < _width; col++)
             {
@@ -160,7 +166,7 @@ public class BlockBoard : MonoBehaviour
 
     public bool AnyFallingBlocks()
     {
-        for (int row = _height-1; row >= 0; row--)
+        for (int row = _height - 1; row >= 0; row--)
         {
             for (int col = (int)transform.position.x; col < _width; col++)
             {

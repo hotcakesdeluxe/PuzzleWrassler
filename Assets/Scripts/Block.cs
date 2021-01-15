@@ -29,7 +29,6 @@ public class Block : MonoBehaviour
             int currentX = Mathf.FloorToInt(currentPos.x);
             if (_blockBoard.IsEmpty(currentX, row))
             {
-                Debug.Log("falling");
                 forcedDownwards = true;
                 _blockBoard.Clear(currentX, row+1);
                 _blockBoard.Add(currentX, row, gameObject.transform);

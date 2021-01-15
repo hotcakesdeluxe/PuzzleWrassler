@@ -7,8 +7,14 @@ public class BlockPairSpawner : MonoBehaviour
     [SerializeField] private BlockBoard _blockBoard;
     [SerializeField] private BlockPair _blockPairPrefab;
     [SerializeField] private Block _blockPrefab;
+    [SerializeField] private Block _breakPrefab;
+    [SerializeField] private GameObject[] _leftPreviewBlocks; //these arrays are just the two kinds of blocks, cube/sphere
+    [SerializeField] private GameObject[] _rightPreviewBlocks;
+    public int maxBreakBlockChance = 8;
     private string _previewLeftType;
     private string _previewRightType;
+    private bool _isLeftBreakerBlock;
+    private bool _isRightBreakerBlock;
     public BlockPair activeBlockPair { get; private set; }
     Stack<Block> blockObjectPool = new Stack<Block>();
     // Start is called before the first frame update
@@ -31,11 +37,37 @@ public class BlockPairSpawner : MonoBehaviour
     {
         _previewLeftType = GetRandomElement();
         _previewRightType = GetRandomElement();
-        _blockBoard.leftPreviewBlock.material.SetColor("_Color", GetColorByType(_previewLeftType));
-        _blockBoard.rightPreviewBlock.material.SetColor("_Color", GetColorByType(_previewRightType));
+        //_leftPreviewBlock.material.SetColor("_Color", GetColorByType(_previewLeftType));
+        //_leftPreviewBlock.rightPreviewBlock.material.SetColor("_Color", GetColorByType(_previewRightType));
+        _isLeftBreakerBlock = IsBreakerBlock();
+        _isRightBreakerBlock = IsBreakerBlock();
+        if(_isLeftBreakerBlock)
+        {
+            _leftPreviewBlocks[0].SetActive(false);
+            _leftPreviewBlocks[1].SetActive(true);
+            _leftPreviewBlocks[1].GetComponent<MeshRenderer>().material.SetColor("_Color", GetColorByType(_previewLeftType));
+        }
+        else
+        {
+            _leftPreviewBlocks[0].SetActive(true);
+            _leftPreviewBlocks[1].SetActive(false);
+            _leftPreviewBlocks[0].GetComponent<MeshRenderer>().material.SetColor("_Color", GetColorByType(_previewLeftType));
+        }
+        if(_isRightBreakerBlock)
+        {
+            _rightPreviewBlocks[0].SetActive(false);
+            _rightPreviewBlocks[1].SetActive(true);
+            _rightPreviewBlocks[1].GetComponent<MeshRenderer>().material.SetColor("_Color", GetColorByType(_previewRightType));
+        }
+        else
+        {
+            _rightPreviewBlocks[0].SetActive(true);
+            _rightPreviewBlocks[1].SetActive(false);
+            _rightPreviewBlocks[0].GetComponent<MeshRenderer>().material.SetColor("_Color", GetColorByType(_previewRightType));
+        }
     }
 
-    private Block GetFreshBlock(string type)
+    private Block GetFreshBlock(string _type, bool _isBreakBlock)
     {
         Block retObj;
 
@@ -45,13 +77,19 @@ public class BlockPairSpawner : MonoBehaviour
         }
         else
         {
-
-            retObj = GameObject.Instantiate<Block>(_blockPrefab, transform.position, Quaternion.identity, activeBlockPair.transform);
+            if(!_isBreakBlock)
+            {
+                retObj = GameObject.Instantiate<Block>(_blockPrefab, transform.position, Quaternion.identity, activeBlockPair.transform);
+            }
+            else
+            {
+                retObj = GameObject.Instantiate<Block>(_breakPrefab, transform.position, Quaternion.identity, activeBlockPair.transform);
+            }
         }
 
         retObj.gameObject.SetActive(true);
         retObj.enabled = true;
-        retObj.blockType = type;
+        retObj.blockType = _type;
         return retObj;
     }
 
@@ -71,6 +109,11 @@ public class BlockPairSpawner : MonoBehaviour
         return
             _blockBoard.blockGrid[(int)transform.position.x, (int)transform.position.y] != null ||
             _blockBoard.blockGrid[(int)transform.position.x + 1, (int)transform.position.y] != null;
+    }
+    private bool IsBreakerBlock()
+    {
+        float randomVal = Random.value * 10;
+        return (randomVal > maxBreakBlockChance);
     }
 
     private string GetRandomElement()
@@ -123,7 +166,7 @@ public class BlockPairSpawner : MonoBehaviour
         {
             //spawn
             activeBlockPair = GameObject.Instantiate<BlockPair>(_blockPairPrefab, transform.position, Quaternion.identity, transform.parent);
-            activeBlockPair.Initialize(_blockBoard, GetFreshBlock(_previewLeftType), GetFreshBlock(_previewRightType));
+            activeBlockPair.Initialize(_blockBoard, GetFreshBlock(_previewLeftType, _isLeftBreakerBlock), GetFreshBlock(_previewRightType, _isRightBreakerBlock));
             activeBlockPair.spawnNextEvent.AddListener(SpawnBlockPair);
             InitializePreviewBlocks();
         }

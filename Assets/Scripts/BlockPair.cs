@@ -183,7 +183,6 @@ public class BlockPair : MonoBehaviour
     {
         foreach (Transform block in transform)
         {
-            //Debug.Log(block.localPosition.x + " ," + block.localPosition.y + " block pos");
             _blockBoard.Add(block.position.x, block.position.y, block);
         }
     }
