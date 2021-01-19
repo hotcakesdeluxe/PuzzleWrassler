@@ -7,16 +7,18 @@ public class BlockPair : MonoBehaviour
 {
     public bool isFastDropping = false;
     public bool isFalling = true;
-    public float fallSpeed = 0.5f;
+    private float _fallSpeed = 1f;
     public float fallSpeedMultiplier = 1f;
     private BlockBoard _blockBoard;
     public Block activeLeftBlock;
     public Block activeRightBlock;
     public SecureEvent spawnNextEvent { get; private set; } = new SecureEvent();
+    public SecureEvent landedEvent { get; private set; } = new SecureEvent();
 
-    public void Initialize(BlockBoard blockboard, Block leftBlock, Block rightBlock)
+    public void Initialize(BlockBoard blockboard, Block leftBlock, Block rightBlock, float fallspeed)
     {
         _blockBoard = blockboard;
+        fallSpeedMultiplier += fallspeed;
         activeLeftBlock = leftBlock;
         activeRightBlock = rightBlock;
         activeLeftBlock.Initialize(_blockBoard);
@@ -30,7 +32,7 @@ public class BlockPair : MonoBehaviour
         //_blockBoard.DebugBoard();
         if (isFalling)
         {
-            float actualFallSpeed = Mathf.Min(30f, fallSpeed * fallSpeedMultiplier);
+            float actualFallSpeed = Mathf.Min(30f, _fallSpeed * fallSpeedMultiplier);
             if (isFastDropping)
             {
                 actualFallSpeed = Mathf.Max(10f, actualFallSpeed);
@@ -46,7 +48,6 @@ public class BlockPair : MonoBehaviour
                 BlockPairLanded();
             }
         }
-
     }
 
     public void TryHorizontalMove(Vector3 direction)
@@ -165,6 +166,7 @@ public class BlockPair : MonoBehaviour
 
     private void BlockPairLanded()
     {
+        landedEvent.Invoke();
         transform.position = new Vector3(Mathf.Round(transform.position.x), Mathf.FloorToInt(transform.position.y), transform.position.z);
         isFalling = false;
         DropBlocks();
@@ -191,9 +193,11 @@ public class BlockPair : MonoBehaviour
     IEnumerator SpawnNextBlock()
     {
         yield return new WaitUntil(() => !ActivelyFalling());
+        
         spawnNextEvent.Invoke();
         //GameObject.Find("PuyoSpawner").GetComponent<PuyoSpawner>().SpawnPuyo();
     }
+    
 
     public Vector3 RoundVector(Vector3 vect)
     {

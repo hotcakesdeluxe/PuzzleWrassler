@@ -5,12 +5,15 @@ using UnityEngine.UI;
 using PHL.Common.Utility;
 public class BlockBoard : MonoBehaviour
 {
+    public Wiggle wiggler;
+    [SerializeField]private ParticleSystem _destroyParticle;
     private int _width = 8;
     private int _height = 12;
     private bool _containsBreaker;
     public Transform[,] blockGrid;
     public Text debugText;
     public SecureEvent<int> scoreUpdateEvent { get; private set; } = new SecureEvent<int>();
+    public SecureEvent deleteBlockEvent { get; private set; } = new SecureEvent();
     void Awake()
     {
         _width += (int)transform.position.x;
@@ -75,6 +78,7 @@ public class BlockBoard : MonoBehaviour
     {
         Vector2 pos = new Vector2(Mathf.Round(block.position.x), Mathf.Round(block.position.y));
         blockGrid[(int)pos.x, (int)pos.y] = null;
+        Instantiate(_destroyParticle, block.position, Quaternion.identity);
         Destroy(block.gameObject);
     }
 
@@ -90,9 +94,12 @@ public class BlockBoard : MonoBehaviour
                 if (blockGrid[col, row] != null)
                 {
                     Transform current = blockGrid[col, row];
-                    if (groupToDelete.IndexOf(current) == -1)
+                    if (current.tag == "Breaker")
                     {
-                        AddNeighbors(current, currentGroup);
+                        if (groupToDelete.IndexOf(current) == -1)
+                        {
+                            AddNeighbors(current, currentGroup);
+                        }
                     }
                 }
 
@@ -158,6 +165,8 @@ public class BlockBoard : MonoBehaviour
     }
     void DeleteUnits(List<Transform> blocksToDelete)
     {
+        deleteBlockEvent.Invoke();
+        StartCoroutine(CameraShake());
         foreach (Transform block in blocksToDelete)
         {
             Delete(block);
@@ -185,6 +194,12 @@ public class BlockBoard : MonoBehaviour
         }
 
         return false;
+    }
+    IEnumerator CameraShake()
+    {
+        wiggler.enabled = true;
+        yield return new WaitForSeconds(1f);
+        wiggler.enabled = false;
     }
 
     void OnDrawGizmos()

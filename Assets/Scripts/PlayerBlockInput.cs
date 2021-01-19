@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using UnityEngine.InputSystem.Users;
+using PHL.Common.Utility;
 public class PlayerBlockInput : MonoBehaviour
 {
     public bool isSecondPlayer = false;
@@ -11,6 +12,8 @@ public class PlayerBlockInput : MonoBehaviour
     [SerializeField] private BlockPairSpawner _blockPairSpawner;
     private BlockPair _currentBlockPair;
     private string currentControlScheme;
+    public SecureEvent moveEvent = new SecureEvent();
+    public SecureEvent rotateEvent = new SecureEvent();
     
     void Awake()
     {
@@ -40,6 +43,7 @@ public class PlayerBlockInput : MonoBehaviour
         if (value.started)
         {
             _currentBlockPair.TryHorizontalMove(Vector3.left);
+            moveEvent.Invoke();
         }
 
     }
@@ -48,6 +52,7 @@ public class PlayerBlockInput : MonoBehaviour
         if (value.started)
         {
             _currentBlockPair.TryHorizontalMove(Vector3.right);
+            moveEvent.Invoke();
         }
     }
     public void OnRotateLeft(InputAction.CallbackContext value)
@@ -55,6 +60,7 @@ public class PlayerBlockInput : MonoBehaviour
         if (value.started)
         {
             _currentBlockPair.TryRotate(1);
+            rotateEvent.Invoke();
         }
     }
     public void OnRotateRight(InputAction.CallbackContext value)
@@ -62,6 +68,7 @@ public class PlayerBlockInput : MonoBehaviour
         if (value.started)
         {
             _currentBlockPair.TryRotate(-1);
+            rotateEvent.Invoke();
         }
     }
     public void OnDrop(InputAction.CallbackContext value)

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using PHL.Common.Utility;
 public class BlockPairSpawner : MonoBehaviour
 {
     [SerializeField] private BlockBoard _blockBoard;
@@ -11,17 +11,21 @@ public class BlockPairSpawner : MonoBehaviour
     [SerializeField] private GameObject[] _leftPreviewBlocks; //these arrays are just the two kinds of blocks, cube/sphere
     [SerializeField] private GameObject[] _rightPreviewBlocks;
     public int maxBreakBlockChance = 8;
+    private int numberOfPairsSpawned = 0;
+    private float _blockPairFallSpeed = 0.5f;
     private string _previewLeftType;
     private string _previewRightType;
     private bool _isLeftBreakerBlock;
     private bool _isRightBreakerBlock;
     public BlockPair activeBlockPair { get; private set; }
+    public SecureEvent spawnPairEvent = new SecureEvent();
     Stack<Block> blockObjectPool = new Stack<Block>();
     // Start is called before the first frame update
     void Start()
     {
         InitializePreviewBlocks();
         SpawnBlockPair();
+        //_blockBoard.deleteBlockEvent.AddListener(ReturnBlockToPool);
     }
 
     public void SpawnBlockPair()
@@ -31,6 +35,7 @@ public class BlockPairSpawner : MonoBehaviour
             StartCoroutine(DelayDelete());
         }
         StartCoroutine(DelaySpawnRoutine());
+        numberOfPairsSpawned += 1;
     }
 
     public void InitializePreviewBlocks()
@@ -95,12 +100,12 @@ public class BlockPairSpawner : MonoBehaviour
 
     private void ReturnBlockToPool(Block obj)
     {
-
+        Debug.Log("reached");
         if (obj != null)
         {
             obj.enabled = false;
             obj.gameObject.SetActive(false);
-
+            Debug.Log("returned");
             blockObjectPool.Push(obj);
         }
     }
@@ -166,8 +171,13 @@ public class BlockPairSpawner : MonoBehaviour
         {
             //spawn
             activeBlockPair = GameObject.Instantiate<BlockPair>(_blockPairPrefab, transform.position, Quaternion.identity, transform.parent);
-            activeBlockPair.Initialize(_blockBoard, GetFreshBlock(_previewLeftType, _isLeftBreakerBlock), GetFreshBlock(_previewRightType, _isRightBreakerBlock));
+            activeBlockPair.Initialize(_blockBoard, GetFreshBlock(_previewLeftType, _isLeftBreakerBlock), GetFreshBlock(_previewRightType, _isRightBreakerBlock), _blockPairFallSpeed);
+            if(numberOfPairsSpawned % 10 == 0)
+            {
+                _blockPairFallSpeed += 0.2f;
+            }
             activeBlockPair.spawnNextEvent.AddListener(SpawnBlockPair);
+            spawnPairEvent.Invoke();
             InitializePreviewBlocks();
         }
     }
