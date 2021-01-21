@@ -10,6 +10,8 @@ public class BlockPairSpawner : MonoBehaviour
     [SerializeField] private Block _breakPrefab;
     [SerializeField] private GameObject[] _leftPreviewBlocks; //these arrays are just the two kinds of blocks, cube/sphere
     [SerializeField] private GameObject[] _rightPreviewBlocks;
+    [SerializeField] private BlockGarbageData _opponentGarbage;
+    [SerializeField] private ArrayDataTest _testGarbage;
     public int maxBreakBlockChance = 8;
     private int numberOfPairsSpawned = 0;
     private float _blockPairFallSpeed = 0.5f;
@@ -26,6 +28,13 @@ public class BlockPairSpawner : MonoBehaviour
         InitializePreviewBlocks();
         SpawnBlockPair();
         //_blockBoard.deleteBlockEvent.AddListener(ReturnBlockToPool);
+        for(int i = 0; i < _testGarbage.data.rows.Length; i++)
+        {
+            for(int j = 0; j < _testGarbage.data.rows[i].row.Length; j++)
+            {
+                Debug.Log(_testGarbage.data.rows[i].row[j]);
+            }
+        }
     }
 
     public void SpawnBlockPair()
@@ -36,6 +45,12 @@ public class BlockPairSpawner : MonoBehaviour
         }
         StartCoroutine(DelaySpawnRoutine());
         numberOfPairsSpawned += 1;
+    }
+    
+    [ContextMenu("spawn garbo")]
+    public void SpawnGarbage( )
+    {
+        StartCoroutine(DelaySpawnGarbage());
     }
 
     public void InitializePreviewBlocks()
@@ -84,11 +99,11 @@ public class BlockPairSpawner : MonoBehaviour
         {
             if(!_isBreakBlock)
             {
-                retObj = GameObject.Instantiate<Block>(_blockPrefab, transform.position, Quaternion.identity, activeBlockPair.transform);
+                retObj = GameObject.Instantiate<Block>(_blockPrefab, transform.position, _blockPrefab.transform.rotation, activeBlockPair.transform);
             }
             else
             {
-                retObj = GameObject.Instantiate<Block>(_breakPrefab, transform.position, Quaternion.identity, activeBlockPair.transform);
+                retObj = GameObject.Instantiate<Block>(_breakPrefab, transform.position, _breakPrefab.transform.rotation, activeBlockPair.transform);
             }
         }
 
@@ -100,12 +115,10 @@ public class BlockPairSpawner : MonoBehaviour
 
     private void ReturnBlockToPool(Block obj)
     {
-        Debug.Log("reached");
         if (obj != null)
         {
             obj.enabled = false;
             obj.gameObject.SetActive(false);
-            Debug.Log("returned");
             blockObjectPool.Push(obj);
         }
     }
@@ -124,22 +137,22 @@ public class BlockPairSpawner : MonoBehaviour
     private string GetRandomElement()
     {
         float randomVal = Random.value * 4;
-        if (randomVal <= 1) return "earth";
-        else if (randomVal <= 2) return "air";
-        else if (randomVal <= 3) return "water";
-        else return "fire";
+        if (randomVal <= 1) return "strike";
+        else if (randomVal <= 2) return "grapple";
+        else if (randomVal <= 3) return "aerial";
+        else return "submission";
     }
     private Color GetColorByType(string type)
     {
-        if (type == "earth")
+        if (type == "strike")
         {
             return Color.green;
         }
-        else if (type == "air")
+        else if (type == "grapple")
         {
             return Color.cyan;
         }
-        else if (type == "water")
+        else if (type == "aerial")
         {
             return Color.blue;
         }
@@ -179,6 +192,21 @@ public class BlockPairSpawner : MonoBehaviour
             activeBlockPair.spawnNextEvent.AddListener(SpawnBlockPair);
             spawnPairEvent.Invoke();
             InitializePreviewBlocks();
+        }
+    }
+
+    IEnumerator DelaySpawnGarbage()
+    {
+        Vector3 spawnPos = transform.position;
+        spawnPos.x -= transform.position.x - 1;
+        yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks() && !_blockBoard.WhatToDelete());
+        foreach(var garbo in _opponentGarbage.firstRow)
+        {
+           Block currGarbo = GetFreshBlock(garbo.ToString(), false);
+           currGarbo.Initialize(_blockBoard);
+           currGarbo.transform.position = spawnPos;
+           spawnPos.x += 1;
+           currGarbo.DropToFloor();
         }
     }
 }

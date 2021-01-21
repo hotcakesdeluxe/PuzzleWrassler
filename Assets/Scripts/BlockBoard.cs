@@ -8,7 +8,7 @@ public class BlockBoard : MonoBehaviour
     public Wiggle wiggler;
     [SerializeField]private ParticleSystem _destroyParticle;
     private int _width = 8;
-    private int _height = 12;
+    private int _height = 14;
     private bool _containsBreaker;
     public Transform[,] blockGrid;
     public Text debugText;

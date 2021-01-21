@@ -39,7 +39,6 @@ public class BlockSounds : MonoBehaviour
     }
     private void PlayDeleteBlockSound()
     {
-        Debug.Log("asdfasdfasdfasdf");
         _source.PlayOneShot(_hitClip);
     }
 

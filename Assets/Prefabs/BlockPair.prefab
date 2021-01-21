@@ -43,8 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3a3211b56ede6b4b8df478c8f09df34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isFastDropping: 0
   isFalling: 1
-  fallSpeed: 0.5
-  fallSpeedMultiplier: 1
+  fallSpeedMultiplier: 0.5
   activeLeftBlock: {fileID: 0}
   activeRightBlock: {fileID: 0}

@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67fd19f57a7b12d48a7ba737648e77f1, type: 3}
+  m_Name: GameEventDatabase
+  m_EditorClassIdentifier: 
+  quitEvent: {fileID: 0}
+  startConversationEvent: {fileID: 0}
+  playSimplerAnimationEvent: {fileID: 11400000, guid: e1a9661f5408c1b40b13c738ea55a822, type: 2}
+  pushRubberBandAnim: {fileID: 0}
+  enableOrDisableObjectEvent: {fileID: 0}
+  checkpointRechedEvent: {fileID: 0}
+  checkpointDestroyedEvent: {fileID: 0}
+  destroyObjectEvent: {fileID: 0}
+  instantiateObjectEvent: {fileID: 0}
+  playParticleSystemEvent: {fileID: 0}
+  stopParticleSystemEvent: {fileID: 0}
+  setCustomValueEvent: {fileID: 0}
+  addToCustomValueEvent: {fileID: 0}
+  fadeToBlackTrigger:
+    gameEventData: {fileID: 0}
+    delay: 0
+    delayType: 0
+    bools: []
+    ints: []
+    floats: []
+    strings: []
+    objects: []
+  fadeFromBlackTrigger:
+    gameEventData: {fileID: 0}
+    delay: 0
+    delayType: 0
+    bools: []
+    ints: []
+    floats: []
+    strings: []
+    objects: []

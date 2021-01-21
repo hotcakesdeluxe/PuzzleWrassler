@@ -8,7 +8,7 @@ public class BlockPair : MonoBehaviour
     public bool isFastDropping = false;
     public bool isFalling = true;
     private float _fallSpeed = 1f;
-    public float fallSpeedMultiplier = 1f;
+    public float fallSpeedMultiplier = 0.5f;
     private BlockBoard _blockBoard;
     public Block activeLeftBlock;
     public Block activeRightBlock;
