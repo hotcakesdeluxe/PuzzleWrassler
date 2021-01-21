@@ -1144,7 +1144,7 @@ MonoBehaviour:
   - {fileID: 58476257}
   _opponentGarbage: {fileID: 11400000, guid: 6a66da0d7933c584188e63a50d114651, type: 2}
   _testGarbage: {fileID: 11400000, guid: e9015011bdd958a41894a6b8e01b58f4, type: 2}
-  maxBreakBlockChance: 9
+  maxBreakBlockChance: 8
 --- !u!4 &547446145
 Transform:
   m_ObjectHideFlags: 0
@@ -2615,7 +2615,7 @@ MonoBehaviour:
   - {fileID: 2076261247}
   _opponentGarbage: {fileID: 11400000, guid: 6a66da0d7933c584188e63a50d114651, type: 2}
   _testGarbage: {fileID: 11400000, guid: e9015011bdd958a41894a6b8e01b58f4, type: 2}
-  maxBreakBlockChance: 9
+  maxBreakBlockChance: 8
 --- !u!4 &1445740734
 Transform:
   m_ObjectHideFlags: 0
