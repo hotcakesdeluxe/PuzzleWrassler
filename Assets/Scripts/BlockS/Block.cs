@@ -76,7 +76,7 @@ public class Block : MonoBehaviour
         else if (type == "aerial")
         {
             colorIdx = 2;
-            return Color.blue;
+            return Color.magenta;
         }
         else
         {
