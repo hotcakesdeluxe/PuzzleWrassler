@@ -21,6 +21,8 @@ public class BlockPair : MonoBehaviour
         fallSpeedMultiplier += fallspeed;
         activeLeftBlock = leftBlock;
         activeRightBlock = rightBlock;
+        activeLeftBlock.transform.SetParent(transform);
+        activeRightBlock.transform.SetParent(transform);
         activeLeftBlock.Initialize(_blockBoard);
         activeRightBlock.Initialize(_blockBoard);
         rightBlock.transform.position = new Vector3(transform.position.x + 1, transform.position.y, transform.position.z);

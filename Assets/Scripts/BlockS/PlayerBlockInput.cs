@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using UnityEngine.InputSystem.Users;
+using UnityEngine.SceneManagement;
 using PHL.Common.Utility;
 public class PlayerBlockInput : MonoBehaviour
 {
@@ -14,24 +15,25 @@ public class PlayerBlockInput : MonoBehaviour
     private string currentControlScheme;
     public SecureEvent moveEvent = new SecureEvent();
     public SecureEvent rotateEvent = new SecureEvent();
-    
+    private bool _gameIsOver = false;
+
     void Awake()
     {
         currentControlScheme = _playerInput.currentControlScheme;
-        if(isSecondPlayer)
+        if (isSecondPlayer)
         {
             InputUser.PerformPairingWithDevice(Keyboard.current, _playerInput.user);
             _playerInput.user.ActivateControlScheme("Player2Keyboard");
         }
-        foreach(var device in _playerInput.devices)
+        /*foreach (var device in _playerInput.devices)
         {
             Debug.Log(device);
-        }
-        
+        }*/
+        _blockPairSpawner.gameEndEvent.AddListener(GameOver);
         //InputUser.PerformPairingWithDevice(Gamepad.current, _playerInput.user);
 
     }
-    
+
     // Update is called once per frame
     void Update()
     {
@@ -85,6 +87,25 @@ public class PlayerBlockInput : MonoBehaviour
             _currentBlockPair.isFastDropping = false;
         }
     }
+
+    public void OnRestart(InputAction.CallbackContext value)
+    {
+        if (_gameIsOver)
+        {
+            if (value.started)
+            {
+                SceneManager.LoadScene("Main", LoadSceneMode.Single);
+            }
+        }
+    }
+
+    public void OnQuitToMenu(InputAction.CallbackContext value)
+    {
+        if (value.started)
+        {
+            SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        }
+    }
     public void OnControlsChanged()
     {
         if (_playerInput.currentControlScheme != currentControlScheme)
@@ -92,5 +113,10 @@ public class PlayerBlockInput : MonoBehaviour
             currentControlScheme = _playerInput.currentControlScheme;
             //playerVisualsBehaviour.UpdatePlayerVisuals();
         }
+    }
+
+    public void GameOver()
+    {
+        _gameIsOver = true;
     }
 }

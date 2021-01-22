@@ -15,3 +15,11 @@ public class ArrayLayout
     public rowData[] rows; //Grid of 7x7
 	public ArrayLayout(int i) { rows = new rowData[i]; }
 }
+
+public enum BlockColor
+{
+    strike,
+    grapple,
+    aerial,
+    submission
+}

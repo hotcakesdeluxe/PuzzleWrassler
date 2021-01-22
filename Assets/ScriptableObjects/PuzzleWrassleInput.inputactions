@@ -44,6 +44,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Hold"
+                },
+                {
+                    "name": "QuitToMenu",
+                    "type": "Button",
+                    "id": "965752b3-4f2a-4e6c-ba8c-f776837068ef",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold"
+                },
+                {
+                    "name": "Restart",
+                    "type": "Button",
+                    "id": "7f88be9c-6ea8-402a-a76d-64cc908ec7f1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Hold"
                 }
             ],
             "bindings": [
@@ -242,6 +258,28 @@
                     "processors": "",
                     "groups": "Player2Keyboard",
                     "action": "Drop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "156bfc53-f4ce-4a16-b5e2-f874f419ec75",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Player1Keyboard",
+                    "action": "QuitToMenu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fcaf6a0b-57ce-4ed6-a4ab-943aa1e3d200",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Player1Keyboard",
+                    "action": "Restart",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

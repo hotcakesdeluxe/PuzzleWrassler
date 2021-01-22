@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[CreateAssetMenu(fileName = "ArrayData", menuName = "TestArrayData")]
-public class ArrayDataTest : ScriptableObject
+[CreateAssetMenu(fileName = "GarbageBlockData", menuName = "GarbageBlockData")]
+public class GarbageBlockData : ScriptableObject
 {
 	public ArrayLayout data  = new ArrayLayout(4);
 }

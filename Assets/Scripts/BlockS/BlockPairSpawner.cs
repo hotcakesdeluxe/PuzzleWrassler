@@ -10,8 +10,7 @@ public class BlockPairSpawner : MonoBehaviour
     [SerializeField] private Block _breakPrefab;
     [SerializeField] private GameObject[] _leftPreviewBlocks; //these arrays are just the two kinds of blocks, cube/sphere
     [SerializeField] private GameObject[] _rightPreviewBlocks;
-    [SerializeField] private BlockGarbageData _opponentGarbage;
-    [SerializeField] private ArrayDataTest _testGarbage;
+    [SerializeField] private GarbageBlockData _opponentGarbageData;
     public int maxBreakBlockChance = 8;
     private int numberOfPairsSpawned = 0;
     private float _blockPairFallSpeed = 0.5f;
@@ -19,20 +18,22 @@ public class BlockPairSpawner : MonoBehaviour
     private string _previewRightType;
     private bool _isLeftBreakerBlock;
     private bool _isRightBreakerBlock;
+   
     public BlockPair activeBlockPair { get; private set; }
     public SecureEvent spawnPairEvent = new SecureEvent();
+    public SecureEvent gameEndEvent = new SecureEvent();
     Stack<Block> blockObjectPool = new Stack<Block>();
     // Start is called before the first frame update
     void Start()
     {
-        InitializePreviewBlocks();
-        SpawnBlockPair();
+        //InitializePreviewBlocks();
+        //SpawnBlockPair();
         //_blockBoard.deleteBlockEvent.AddListener(ReturnBlockToPool);
-        for(int i = 0; i < _testGarbage.data.rows.Length; i++)
+        for(int i = 0; i < _opponentGarbageData.data.rows.Length; i++)
         {
-            for(int j = 0; j < _testGarbage.data.rows[i].row.Length; j++)
+            for(int j = 0; j < _opponentGarbageData.data.rows[i].row.Length; j++)
             {
-                Debug.Log(_testGarbage.data.rows[i].row[j]);
+                Debug.Log(_opponentGarbageData.data.rows[i].row[j]);
             }
         }
     }
@@ -48,9 +49,10 @@ public class BlockPairSpawner : MonoBehaviour
     }
     
     [ContextMenu("spawn garbo")]
-    public void SpawnGarbage( )
+    public void SpawnGarbage(int garbageRows)
     {
-        StartCoroutine(DelaySpawnGarbage());
+        Debug.Log("try spawning garbage");
+        StartCoroutine(DelaySpawnGarbage(garbageRows));
     }
 
     public void InitializePreviewBlocks()
@@ -99,11 +101,11 @@ public class BlockPairSpawner : MonoBehaviour
         {
             if(!_isBreakBlock)
             {
-                retObj = GameObject.Instantiate<Block>(_blockPrefab, transform.position, _blockPrefab.transform.rotation, activeBlockPair.transform);
+                retObj = GameObject.Instantiate<Block>(_blockPrefab, transform.position, _blockPrefab.transform.rotation);
             }
             else
             {
-                retObj = GameObject.Instantiate<Block>(_breakPrefab, transform.position, _breakPrefab.transform.rotation, activeBlockPair.transform);
+                retObj = GameObject.Instantiate<Block>(_breakPrefab, transform.position, _breakPrefab.transform.rotation);
             }
         }
 
@@ -168,6 +170,7 @@ public class BlockPairSpawner : MonoBehaviour
         yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks());
         if (_blockBoard.WhatToDelete())
         {
+            yield return new WaitForSeconds(.2f);
             StartCoroutine(DelayDelete());
         }
 
@@ -179,6 +182,7 @@ public class BlockPairSpawner : MonoBehaviour
         if (GameIsOver())
         {
             Debug.Log("Game Over");
+            gameEndEvent.Invoke();
         }
         else
         {
@@ -195,18 +199,41 @@ public class BlockPairSpawner : MonoBehaviour
         }
     }
 
-    IEnumerator DelaySpawnGarbage()
+    IEnumerator DelaySpawnGarbage(int garbageRows)
     {
+
         Vector3 spawnPos = transform.position;
-        spawnPos.x -= transform.position.x - 1;
+        Debug.Log("spawning garbage at  " + spawnPos);
+        spawnPos.x -= 3;
+        spawnPos.y -= 4;
+        Debug.Log("changing x value to  " + spawnPos.x);
+        float startingXPos = spawnPos.x;
         yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks() && !_blockBoard.WhatToDelete());
-        foreach(var garbo in _opponentGarbage.firstRow)
+        /*foreach(var garbo in _opponentGarbage.firstRow)
         {
            Block currGarbo = GetFreshBlock(garbo.ToString(), false);
            currGarbo.Initialize(_blockBoard);
            currGarbo.transform.position = spawnPos;
            spawnPos.x += 1;
            currGarbo.DropToFloor();
+        }*/
+        for(int i = 0; i < garbageRows; i++)
+        {
+            spawnPos.y += 1;
+            //Debug.Log(i + " row" + spawnPos.y + " y position");
+            for(int j = 0; j < _opponentGarbageData.data.rows[i].row.Length; j++)
+            {
+                Debug.Log(_opponentGarbageData.data.rows[i].row[j]);
+                Block currGarbo = GetFreshBlock(_opponentGarbageData.data.rows[i].row[j].ToString(), false);
+                currGarbo.transform.SetParent(null);
+                currGarbo.Initialize(_blockBoard);
+                Debug.Log("before spawning, spawnPos is " + spawnPos);
+                currGarbo.transform.position = spawnPos;
+                Debug.Log("spawning garbage at  " + currGarbo.transform.position);
+                spawnPos.x += 1;
+                currGarbo.DropToFloor();
+            }
+            spawnPos.x = startingXPos;
         }
     }
 }
