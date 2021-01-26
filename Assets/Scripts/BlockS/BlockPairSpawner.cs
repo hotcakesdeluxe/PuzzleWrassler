@@ -168,7 +168,6 @@ public class BlockPairSpawner : MonoBehaviour
         yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks());
         if (_blockBoard.WhatToDelete())
         {
-            yield return new WaitForSeconds(.2f);
             StartCoroutine(DelayDelete());
         }
 
