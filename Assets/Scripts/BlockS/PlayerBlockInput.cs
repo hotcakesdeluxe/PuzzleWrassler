@@ -30,6 +30,7 @@ public class PlayerBlockInput : MonoBehaviour
             Debug.Log(device);
         }*/
         _blockPairSpawner.gameEndEvent.AddListener(GameOver);
+        _blockPairSpawner.spawnPairEvent.AddListener(UpdateBlockLandedEvent);
         //InputUser.PerformPairingWithDevice(Gamepad.current, _playerInput.user);
 
     }
@@ -37,14 +38,32 @@ public class PlayerBlockInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _currentBlockPair = _blockPairSpawner.activeBlockPair;
+        //_currentBlockPair = _blockPairSpawner.activeBlockPair;
+    }
+
+    private void UpdateBlockLandedEvent()
+    {
+        _blockPairSpawner.activeBlockPair.landedEvent.AddListener(PauseInput);
+    }
+    private void PauseInput()
+    {
+        //probably need a better solution but theres a frame where you can slide the block after it lands and this is the last minute fix
+        StartCoroutine(PauseInputRoutine());
+    }
+    private IEnumerator PauseInputRoutine()
+    {
+        _playerInput.DeactivateInput();
+        yield return new WaitForSeconds(0.1f);
+        Debug.Log("here");
+        _playerInput.ActivateInput();
+
     }
     public void OnMoveLeft(InputAction.CallbackContext value)
     {
 
         if (value.started)
         {
-            _currentBlockPair.TryHorizontalMove(Vector3.left);
+            _blockPairSpawner.activeBlockPair.TryHorizontalMove(Vector3.left);
             moveEvent.Invoke();
         }
 
@@ -53,7 +72,7 @@ public class PlayerBlockInput : MonoBehaviour
     {
         if (value.started)
         {
-            _currentBlockPair.TryHorizontalMove(Vector3.right);
+            _blockPairSpawner.activeBlockPair.TryHorizontalMove(Vector3.right);
             moveEvent.Invoke();
         }
     }
@@ -61,7 +80,7 @@ public class PlayerBlockInput : MonoBehaviour
     {
         if (value.started)
         {
-            _currentBlockPair.TryRotate(1);
+            _blockPairSpawner.activeBlockPair.TryRotate(1);
             rotateEvent.Invoke();
         }
     }
@@ -69,7 +88,7 @@ public class PlayerBlockInput : MonoBehaviour
     {
         if (value.started)
         {
-            _currentBlockPair.TryRotate(-1);
+            _blockPairSpawner.activeBlockPair.TryRotate(-1);
             rotateEvent.Invoke();
         }
     }
@@ -79,12 +98,12 @@ public class PlayerBlockInput : MonoBehaviour
         {
             if (value.interaction is HoldInteraction)
             {
-                _currentBlockPair.isFastDropping = true;
+                _blockPairSpawner.activeBlockPair.isFastDropping = true;
             }
         }
         if (value.canceled)
         {
-            _currentBlockPair.isFastDropping = false;
+            _blockPairSpawner.activeBlockPair.isFastDropping = false;
         }
     }
 
@@ -106,14 +125,7 @@ public class PlayerBlockInput : MonoBehaviour
             SceneManager.LoadScene("Menu", LoadSceneMode.Single);
         }
     }
-    public void OnControlsChanged()
-    {
-        if (_playerInput.currentControlScheme != currentControlScheme)
-        {
-            currentControlScheme = _playerInput.currentControlScheme;
-            //playerVisualsBehaviour.UpdatePlayerVisuals();
-        }
-    }
+
 
     public void GameOver()
     {

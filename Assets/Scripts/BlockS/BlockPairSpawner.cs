@@ -24,19 +24,6 @@ public class BlockPairSpawner : MonoBehaviour
     public SecureEvent gameEndEvent = new SecureEvent();
     Stack<Block> blockObjectPool = new Stack<Block>();
     // Start is called before the first frame update
-    void Start()
-    {
-        //InitializePreviewBlocks();
-        //SpawnBlockPair();
-        //_blockBoard.deleteBlockEvent.AddListener(ReturnBlockToPool);
-        for(int i = 0; i < _opponentGarbageData.data.rows.Length; i++)
-        {
-            for(int j = 0; j < _opponentGarbageData.data.rows[i].row.Length; j++)
-            {
-                Debug.Log(_opponentGarbageData.data.rows[i].row[j]);
-            }
-        }
-    }
 
     public void SpawnBlockPair()
     {
@@ -165,12 +152,13 @@ public class BlockPairSpawner : MonoBehaviour
     IEnumerator DelayDelete()
     {
         _blockBoard.DropAllColumns();
+        
         yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks());
         if (_blockBoard.WhatToDelete())
         {
+            _blockBoard.DropAllColumns();
             StartCoroutine(DelayDelete());
         }
-
     }
 
     IEnumerator DelaySpawnRoutine()
@@ -179,6 +167,7 @@ public class BlockPairSpawner : MonoBehaviour
         if (GameIsOver())
         {
             gameEndEvent.Invoke();
+            activeBlockPair.spawnNextEvent.RemoveListener(SpawnBlockPair);
         }
         else
         {
@@ -218,9 +207,14 @@ public class BlockPairSpawner : MonoBehaviour
                 currGarbo.transform.position = spawnPos;
                 spawnPos.x += 1;
                 currGarbo.DropToFloor();
+                //StartCoroutine(DelayDelete());
             }
             //reset x for next row
             spawnPos.x = startingXPos;
+            
         }
+        _blockBoard.DropAllColumns();
+        yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks());
+        StartCoroutine(DelayDelete());
     }
 }

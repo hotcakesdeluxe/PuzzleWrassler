@@ -17,7 +17,7 @@ public class ScoreHandler : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(_combo);
+        //Debug.Log(_combo);
     }
     private void UpdateScoreText(int blocksDestroyed)
     {

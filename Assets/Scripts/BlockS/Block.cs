@@ -12,6 +12,14 @@ public class Block : MonoBehaviour
     public bool forcedDownwards = false;
     public int colorIdx;
 
+    void Update()
+    {
+        if (_blockBoard != null)
+        {
+            _blockBoard.DebugBoard();
+        }
+
+    }
 
     public void Initialize(BlockBoard blockBoard)
     {
@@ -30,7 +38,7 @@ public class Block : MonoBehaviour
             if (_blockBoard.IsEmpty(currentX, row))
             {
                 forcedDownwards = true;
-                _blockBoard.Clear(currentX, row+1);
+                _blockBoard.Clear(currentX, row + 1);
                 _blockBoard.Add(currentX, row, gameObject.transform);
                 gameObject.transform.position += Vector3.down;
                 yield return wait;
@@ -66,7 +74,7 @@ public class Block : MonoBehaviour
         if (type == "strike")
         {
             colorIdx = 0;
-            return  Color.green;
+            return Color.green;
         }
         else if (type == "grapple")
         {
@@ -84,7 +92,8 @@ public class Block : MonoBehaviour
             return Color.red;
         }
     }
-    private Vector3 RoundVector(Vector3 vect){
+    private Vector3 RoundVector(Vector3 vect)
+    {
         return new Vector2(Mathf.Round(vect.x), Mathf.Round(vect.y));
     }
 

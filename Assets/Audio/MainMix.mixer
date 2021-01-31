@@ -14,6 +14,39 @@ AudioMixerEffectController:
   m_SendTarget: {fileID: 0}
   m_EnableWetMix: 0
   m_Bypass: 0
+--- !u!244 &-7009776120443272439
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: e638eae57a8c777479b04353465a8882
+  m_EffectName: Attenuation
+  m_MixLevel: 10da08f87f1dabc489c70a3ecf6c2db5
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!243 &-5191664313015752570
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SFX
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: c5a4d60347b9c2b4f8d02413f9138819
+  m_Children: []
+  m_Volume: d14926a790076224da03bec871e296af
+  m_Pitch: 9825765ee691e3d4288acfd895794905
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: -7009776120443272439}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
 --- !u!241 &24100000
 AudioMixerController:
   m_ObjectHideFlags: 0
@@ -35,6 +68,7 @@ AudioMixerController:
     - 190e469d7a1511e4fbf7ba4546a32eda
     - c3b1b7d25869eb14599654e8b28e1190
     - c8be53283d37834429a04fdce9fef2ea
+    - c5a4d60347b9c2b4f8d02413f9138819
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -50,6 +84,7 @@ AudioMixerGroupController:
   m_Children:
   - {fileID: 1778071986146042510}
   - {fileID: 517172737518402774}
+  - {fileID: -5191664313015752570}
   m_Volume: 06787d5428e715f48a1c59a1158515b4
   m_Pitch: 58767deaad8f9de459ff411cb28b003c
   m_Send: 00000000000000000000000000000000
@@ -84,6 +119,7 @@ AudioMixerSnapshotController:
   m_SnapshotID: ecad26a354bdc9c48937aa061f337b57
   m_FloatValues:
     9c8b9b056987bd14c93af57775771c7a: -7.8940816
+    d14926a790076224da03bec871e296af: -3.1841109
     d747992ff5d361c4a96d9fb048e2a358: -9.833286
   m_TransitionOverrides: {}
 --- !u!243 &517172737518402774
