@@ -18,6 +18,7 @@ public class BlockPairSpawner : MonoBehaviour
     private string _previewRightType;
     private bool _isLeftBreakerBlock;
     private bool _isRightBreakerBlock;
+    private bool _isSpawningGarbage;
    
     public BlockPair activeBlockPair { get; private set; }
     public SecureEvent spawnPairEvent = new SecureEvent();
@@ -37,6 +38,7 @@ public class BlockPairSpawner : MonoBehaviour
     
     public void SpawnGarbage(int garbageRows)
     {
+        _isSpawningGarbage = true;
         StartCoroutine(DelaySpawnGarbage(garbageRows));
     }
 
@@ -163,7 +165,7 @@ public class BlockPairSpawner : MonoBehaviour
 
     IEnumerator DelaySpawnRoutine()
     {
-        yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks() && !_blockBoard.WhatToDelete());
+        yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks() && !_blockBoard.WhatToDelete() && !_isSpawningGarbage);
         if (GameIsOver())
         {
             gameEndEvent.Invoke();
@@ -189,7 +191,8 @@ public class BlockPairSpawner : MonoBehaviour
         //set and offset from this transform
         Vector3 spawnPos = transform.position;
         spawnPos.x -= 3;
-        spawnPos.y -= 4; //should set this based on how many rows spawn so if its just one row it doesn't spawn 4 rows down
+        //spawnPos.y -= garbageRows;
+        Debug.Log(spawnPos.y);
         float startingXPos = spawnPos.x;
         yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks() && !_blockBoard.WhatToDelete());
         //loop thru columns
@@ -213,8 +216,7 @@ public class BlockPairSpawner : MonoBehaviour
             spawnPos.x = startingXPos;
             
         }
-        _blockBoard.DropAllColumns();
-        yield return new WaitUntil(() => !_blockBoard.AnyFallingBlocks());
         StartCoroutine(DelayDelete());
+        _isSpawningGarbage = false;
     }
 }

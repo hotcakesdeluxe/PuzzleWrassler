@@ -126,12 +126,14 @@ public class BlockBoard : MonoBehaviour
 
     public void DropAllColumns()
     {
+        Debug.Log("dropping all columns");
         for (int row = 0; row < _height - 1; row++)
         {
             for (int col = (int)transform.position.x; col < _width; col++)
             {
                 if (blockGrid[col, row] != null)
                 {
+                    Debug.Log("dropping to floor");
                     Transform block = blockGrid[col, row];
                     block.gameObject.GetComponent<Block>().DropToFloor();
                 }
